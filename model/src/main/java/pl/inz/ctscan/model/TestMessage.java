@@ -1,14 +1,11 @@
 package pl.inz.ctscan.model;
 
+import lombok.Getter;
+import lombok.Setter;
+
+@Getter
+@Setter
 public class TestMessage {
 
     private String topSecret;
-
-    public String getTopSecret() {
-        return topSecret;
-    }
-
-    public void setTopSecret(String topSecret) {
-        this.topSecret = topSecret;
-    }
 }
