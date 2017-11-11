@@ -8,7 +8,7 @@ import pl.inz.ctscan.model.TestMessage;
 import java.util.List;
 
 @RestController
-@RequestMapping(path = "test", produces = "application/json")
+@RequestMapping("/test")
 public class TestController {
 
     @Autowired
