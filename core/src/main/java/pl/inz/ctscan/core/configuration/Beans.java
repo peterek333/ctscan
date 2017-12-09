@@ -6,6 +6,8 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+import pl.inz.ctscan.core.utils.FileManager;
+import pl.inz.ctscan.core.utils.ImageConverter;
 
 @Configuration
 public class Beans {
@@ -22,5 +24,15 @@ public class Beans {
         source.registerCorsConfiguration("/**", new CorsConfiguration().applyPermitDefaultValues());
 
         return source;
+    }
+
+    @Bean
+    public FileManager fileManager() {
+        return new FileManager();
+    }
+
+    @Bean
+    public ImageConverter imageConverter() {
+        return new ImageConverter();
     }
 }
