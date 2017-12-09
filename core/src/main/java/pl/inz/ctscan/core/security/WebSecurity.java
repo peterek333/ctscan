@@ -28,8 +28,11 @@ public class WebSecurity extends WebSecurityConfigurerAdapter {
         http.cors().and().csrf().disable().authorizeRequests()
                 //.antMatchers(HttpMethod.GET, LOG_IN_URL).permitAll()
                 .antMatchers(HttpMethod.POST, SIGN_UP_URL).permitAll()
-                .antMatchers(HttpMethod.GET, "/index.html").permitAll()
-                .antMatchers("/min/**",
+                .antMatchers(HttpMethod.GET,
+                        "/",
+                        "/login",
+                        "/modules/user/login/loginView.html",
+                        "/min/**",
                         "/image/**").permitAll()
                 .anyRequest().authenticated()
                 .and()
