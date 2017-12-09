@@ -1,0 +1,12 @@
+{
+  "name": "ctscan",
+  "appPath": "src/main/resources/static",
+  "directory": "src/main/resources/static/bower_components",
+  "private": true,
+  "dependencies": {
+    "jquery": "~3.2.0",
+    "jquery-ui": "~1.12.0",
+    "bootstrap": "~3.3.6",
+    "angular": "~1.6.0"
+  }
+}
