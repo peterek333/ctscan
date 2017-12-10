@@ -26,18 +26,12 @@
                        data-ng-model="repassword" />
             </div>
 
-            <div class="login-section" data-ng-show="!signupMode" data-ng-animate="'animate'">
+            <div class="login-section">
                 <button class="btn btn-default"
                         type="submit"
-                        data-ng-click="login()">
-                    <span class="bold" data-ng-bind="'Login'"></span>
-                </button>
-            </div>
-            <div class="login-section" data-ng-show="signupMode">
-                <button class="btn btn-default"
-                        type="submit"
-                        data-ng-click="register()">
-                    <span class="bold" data-ng-bind="'Signup'"></span>
+                        data-ng-click="signupMode ? register() : login()">
+                    <span class="bold"
+                          data-ng-bind="signupMode ? 'Signup' : 'Login'"></span>
                 </button>
             </div>
         </form>

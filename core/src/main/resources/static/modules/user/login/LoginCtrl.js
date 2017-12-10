@@ -21,6 +21,8 @@ controllers
                     UserService.setCurrentUser(user);
 
                     $scope.goto('DASHBOARD');
+                } else {
+                    ngNotify.set(response.data.message);
                 }
             }).catch(function(response) {
                 console.log('nieudane', response);
@@ -41,14 +43,19 @@ controllers
                         $scope.signupMode = false;
 
                         ngNotify.set('You have successfully signed up', {
-                            position: 'top'
+                            type: 'success'
                         });
+                    } else {
+                        ngNotify.set(response.data.message);
                     }
-
-                }).catch(function(response) {
+                }, function(response) {
                     console.log('nieudane', response);
                 });
         }
+    };
+
+    $scope.getType = function() {
+        return $scope.signupMode ? 'submit' : '';
     };
 
     function checkPasswords() {

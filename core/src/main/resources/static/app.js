@@ -32,8 +32,33 @@ angular.module('ctscan', ['ctscan.controllers', 'ctscan.services', 'ui.router', 
     $httpProvider.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
 
     $urlRouterProvider.otherwise('/login');
+})
+.factory('authHttpResponseInterceptor', function ($q, $location, $injector, $timeout) {
+    return {
+        response: function (response) {
+            if (response.status === 401) {
+                console.log("Response 401");
+            }
+            return response || $q.when(response);
+        },
+        responseError: function (rejection) {
+            if (rejection.status === 401) {
+                console.log("Response Error 401", rejection);
+                $location.path('/login');
+            }
+            return $q.reject(rejection);
+        }
+    }
+})
+.config(function ($httpProvider) {
+    $httpProvider.interceptors.push('authHttpResponseInterceptor');
 
     $httpProvider.interceptors.push('APIInterceptor');
+})
+.run(function(ngNotify) {
+    ngNotify.config({
+        position: 'top'
+    })
 })
 .controller('AppCtrl', function($scope, $state, $rootScope, UserService) {
     var DEFAULT_BODY_CLASS = '';
