@@ -13,6 +13,7 @@
     "angular-animate": "~1.6.0",
 
     "a0-angular-storage": "~0.0.15",
+    "ng-notify": "0.8.0",
 
     "jwt-decode": "~2.2.0"
   }

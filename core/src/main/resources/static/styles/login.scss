@@ -18,6 +18,10 @@
   padding: 25px;
   border-radius: 5px;
   background: #002;
+
+  -webkit-box-shadow: 1px 1px 10px 2px rgba(0,0,0,0.75);
+  -moz-box-shadow: 1px 1px 10px 2px rgba(0,0,0,0.75);
+  box-shadow: 1px 1px 10px 2px rgba(0,0,0,0.75);
 }
 
 .white-text {
@@ -35,6 +39,7 @@
 .signup-section {
   border: 1px solid whitesmoke;
   border-width: 1px 0 0 0;
+  text-shadow: 1px 1px 15px darkblue;
 }
 
 .animate-show {
@@ -48,4 +53,13 @@
 
 .animate-show.ng-hide {
   opacity:0;
+}
+
+.select-link {
+  text-decoration: none;
+  color: wheat;
+
+  :hover {
+    color: cornflowerblue;
+  }
 }

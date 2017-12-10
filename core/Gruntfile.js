@@ -35,7 +35,8 @@ module.exports = function(grunt) {
                     'min/temp/controllers.js' : [ 'app.js', 'modules/**/*.js' ],
                     'min/temp/vendor.css' : [
                         'bower_components/bootstrap/dist/css/bootstrap.css',
-                        'bower_components/bootstrap/dist/css/bootstrap-theme.css'
+                        'bower_components/bootstrap/dist/css/bootstrap-theme.css',
+                        'bower_components/ng-notify/dist/ng-notify.min.css'
                     ],
                     'min/temp/vendor.js' : [
                         'bower_components/jquery/dist/jquery.js',
@@ -44,7 +45,8 @@ module.exports = function(grunt) {
                         'bower_components/angular-ui-router/release/angular-ui-router.js',
                         'bower_components/angular-animate/angular-animate.js',
                         'bower_components/a0-angular-storage/dist/angular-storage.js',
-                        'bower_components/jwt-decode/build/jwt-decode.js'
+                        'bower_components/jwt-decode/build/jwt-decode.js',
+                        'bower_components/ng-notify/dist/ng-notify.min.js'
                     ]
                 }
             }

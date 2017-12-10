@@ -15,4 +15,8 @@ services
         }
         return currentUser;
     };
+
+    service.isLoggedIn = function() {
+        return currentUser !== null;
+    }
 });

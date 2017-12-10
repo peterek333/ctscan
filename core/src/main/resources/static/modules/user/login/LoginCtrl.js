@@ -1,27 +1,59 @@
 controllers
-.controller('LoginCtrl', function($scope, $http, UserService) {
+.controller('LoginCtrl', function($scope, $http, UserService, RestService, ngNotify) {
 
     $scope.username = "test@test.com";
     $scope.password = "test";
     $scope.signupMode = false;
 
     $scope.login = function() {
-        var json = {
+        var loginCredentials = {
             email: $scope.username,
             password: $scope.password
         };
 
-        $http.post('/login', json)
+        RestService.login(loginCredentials)
             .then(function(response) {
-                var user = {};
-                user.access_token = response.headers('authorization');
+                console.log('odp', response);
+                if(response.status === 200) {
+                    var user = {};
+                    user.access_token = response.headers('authorization');
 
-                UserService.setCurrentUser(user);
-                location.reload();
+                    UserService.setCurrentUser(user);
+
+                    $scope.goto('DASHBOARD');
+                }
             }).catch(function(response) {
                 console.log('nieudane', response);
             });
     };
+
+    $scope.register = function() {
+        if(checkPasswords()) {
+            var signupData = {
+                email: $scope.username,
+                password: $scope.password
+            };
+
+            RestService.register(signupData)
+                .then(function(response) {
+                    console.log('udane', response);
+                    if(response.status === 200) {
+                        $scope.signupMode = false;
+
+                        ngNotify.set('You have successfully signed up', {
+                            position: 'top'
+                        });
+                    }
+
+                }).catch(function(response) {
+                    console.log('nieudane', response);
+                });
+        }
+    };
+
+    function checkPasswords() {
+        return $scope.repassword && $scope.password === $scope.repassword;
+    }
 
     $scope.setSignupMode = function(state) {
         $scope.signupMode = state;

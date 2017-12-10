@@ -1,4 +1,4 @@
-angular.module('ctscan', ['ctscan.controllers', 'ctscan.services', 'ui.router', 'angular-storage', 'ngAnimate'])
+angular.module('ctscan', ['ctscan.controllers', 'ctscan.services', 'ui.router', 'angular-storage', 'ngAnimate', 'ngNotify'])
 .config(function($stateProvider, $urlRouterProvider, $httpProvider) {
 
     $stateProvider
@@ -19,7 +19,6 @@ angular.module('ctscan', ['ctscan.controllers', 'ctscan.services', 'ui.router', 
             }
         })
         .state('main', {
-            url: '/',
             templateUrl: 'modules/main/mainView.html',
             controller: 'MainCtrl'
         })
@@ -36,38 +35,37 @@ angular.module('ctscan', ['ctscan.controllers', 'ctscan.services', 'ui.router', 
 
     $httpProvider.interceptors.push('APIInterceptor');
 })
-    .controller('AppCtrl', function($scope, $state, $rootScope, UserService) {
-        var DEFAULT_BODY_CLASS = '';
-        $scope.name = 'Peter';
-        $scope.bodyClasses = angular.copy(DEFAULT_BODY_CLASS);
+.controller('AppCtrl', function($scope, $state, $rootScope, UserService) {
+    var DEFAULT_BODY_CLASS = '';
+    $scope.name = 'Peter';
+    $scope.bodyClasses = angular.copy(DEFAULT_BODY_CLASS);
 
-        $scope.goto = function(stateName) {
-            switch(stateName) {
-                case 'SIGNUP':
-                    $state.go('signup');
-                    break;
-                case 'MAIN':
-                    $state.go('main');
-                    break;
-                case 'DASHBOARD':
-                    $state.go('main.dashboard');
-                    break;
-            }
-        };
+    $scope.goto = function(stateName) {
+        switch(stateName) {
+            case 'SIGNUP':
+                $state.go('signup');
+                break;
+            case 'MAIN':
+                $state.go('main');
+                break;
+            case 'DASHBOARD':
+                $state.go('main.dashboard');
+                break;
+        }
+    };
 
-        $scope.$on('$stateChangeSuccess', function(event, toState, toParams, fromState, fromParams) {
-            if(angular.isDefined(toState.data) && angular.isDefined(toState.data.bodyClasses)) {
-                $scope.bodyClasses = toState.data.bodyClasses;
-            } else {
-                $scope.bodyClasses = angular.copy(DEFAULT_BODY_CLASS);
-            }
-        });
-
-        $rootScope.isLoggedIn = function() {
-            console.log('sprawdzam');
-            return UserService.getCurrentUser() !== null;
-        };
+    $rootScope.$on('$stateChangeSuccess', function(event, toState, toParams, fromState, fromParams) {
+        if(angular.isDefined(toState.data) && angular.isDefined(toState.data.bodyClasses)) {
+            $scope.bodyClasses = toState.data.bodyClasses;
+        } else {
+            $scope.bodyClasses = angular.copy(DEFAULT_BODY_CLASS);
+        }
     });
+
+    $rootScope.isLoggedIn = function() {
+        return UserService.isLoggedIn();
+    };
+});
 
 var controllers = angular.module('ctscan.controllers', []);
 var services = angular.module('ctscan.services', []);
