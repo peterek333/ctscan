@@ -3,6 +3,7 @@ controllers
 
     $scope.username = "test@test.com";
     $scope.password = "test";
+    $scope.signupMode = false;
 
     $scope.login = function() {
         var json = {
@@ -20,7 +21,9 @@ controllers
             }).catch(function(response) {
                 console.log('nieudane', response);
             });
+    };
 
-
+    $scope.setSignupMode = function(state) {
+        $scope.signupMode = state;
     }
 });

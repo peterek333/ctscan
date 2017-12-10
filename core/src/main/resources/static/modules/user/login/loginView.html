@@ -1,11 +1,53 @@
-<div class="login-div">
+<div class="login-container">
 
-    <input type="text" data-ng-model="username" />
-    <input type="text" data-ng-model="password" />
-    <button data-ng-click="login()">Login</button>
-    <br/>
-    <button data-ng-click="goto('SIGNUP')">Signup</button>
-    <button data-ng-click="goto('MAIN')">Main</button>
-    <button data-ng-click="goto('DASHBOARD')">Dashboard</button>
+    <div class="login-div">
+        <form>
+            <div class="login-section">
+                <span class="white-text bold" data-ng-bind="'E-mail'"></span>
+                <input type="text"
+                       class="form-control"
+                       data-ng-model="username" />
+            </div>
 
+            <div class="login-section">
+                <span class="white-text bold" data-ng-bind="'Password'"></span>
+                <input type="password"
+                       class="form-control"
+                       data-ng-model="password" />
+            </div>
+
+            <div class="login-section animate-show" data-ng-show="signupMode">
+                <span class="white-text bold" data-ng-bind="'Re-Password'"></span>
+                <input type="password"
+                       class="form-control"
+                       data-ng-model="repassword" />
+            </div>
+
+            <div class="login-section" data-ng-show="!signupMode" data-ng-animate="'animate'">
+                <button class="btn btn-default"
+                        type="submit"
+                        data-ng-click="login()">
+                    <span class="bold" data-ng-bind="'Login'"></span>
+                </button>
+            </div>
+            <div class="login-section" data-ng-show="signupMode">
+                <button class="btn btn-default"
+                        type="submit"
+                        data-ng-click="register()">
+                    <span class="bold" data-ng-bind="'Signup'"></span>
+                </button>
+            </div>
+        </form>
+
+        <div class="login-section signup-section" data-ng-show="!signupMode">
+            <a href=""><span class="bold" data-ng-bind="'You don\'t have account - sign up'" data-ng-click="setSignupMode(true)"></span></a>
+        </div>
+        <div class="login-section signup-section" data-ng-show="signupMode">
+            <a href=""><span class="bold" data-ng-bind="'Back to login view'" data-ng-click="setSignupMode(false)"></span></a>
+        </div>
+
+        <button data-ng-click="goto('SIGNUP')">Signup</button>
+        <button data-ng-click="goto('MAIN')">Main</button>
+        <button data-ng-click="goto('DASHBOARD')">Dashboard</button>
+    </div>
 </div>

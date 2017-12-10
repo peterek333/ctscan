@@ -1,4 +1,4 @@
-angular.module('ctscan', ['ctscan.controllers', 'ctscan.services', 'ui.router', 'angular-storage'])
+angular.module('ctscan', ['ctscan.controllers', 'ctscan.services', 'ui.router', 'angular-storage', 'ngAnimate'])
 .config(function($stateProvider, $urlRouterProvider, $httpProvider) {
 
     $stateProvider
@@ -29,28 +29,6 @@ angular.module('ctscan', ['ctscan.controllers', 'ctscan.services', 'ui.router', 
             controller: 'DashboardCtrl'
         })
     ;
-// .state('main', {
-//         url: '/',
-//         views: {
-//             'main': {
-//                 controller: 'MainCtrl'
-//             }
-//         }
-//     })
-//         .state('main.login', {
-//             url: 'login',
-//             templateUrl: 'modules/user/login/loginView.html',
-//             controller: "LoginCtrl",
-//             data: {
-//                 bodyClasses: 'login-background'
-//             }
-//         })
-//         .state('main.signup', {
-//             url: 'signup',
-//             templateUrl: 'modules/user/signup/signupView.html',
-//             controller: "SignupCtrl"
-//         });
-
 
     $httpProvider.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
 
