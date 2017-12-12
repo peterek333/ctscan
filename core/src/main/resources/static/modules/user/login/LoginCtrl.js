@@ -22,7 +22,13 @@ controllers
 
                     $scope.goto('DASHBOARD');
                 } else {
-                    ngNotify.set(response.data.message);
+                    var type = 'info';
+                    if(response.status === 401) {
+                        type = 'error';
+                    }
+                    ngNotify.set(response.data.message, {
+                        type: type
+                    });
                 }
             }).catch(function(response) {
                 console.log('nieudane', response);
@@ -51,11 +57,9 @@ controllers
                 }, function(response) {
                     console.log('nieudane', response);
                 });
+        } else {
+            ngNotify.set('')
         }
-    };
-
-    $scope.getType = function() {
-        return $scope.signupMode ? 'submit' : '';
     };
 
     function checkPasswords() {

@@ -1,9 +1,11 @@
+var prefix = '/admin';
+
 angular.module('ctscan', ['ctscan.controllers', 'ctscan.services', 'ui.router', 'angular-storage', 'ngAnimate', 'ngNotify'])
 .config(function($stateProvider, $urlRouterProvider, $httpProvider) {
 
     $stateProvider
         .state('login', {
-            url: '/login',
+            url: prefix + '/login',
             templateUrl: 'modules/user/login/loginView.html',
             controller: 'LoginCtrl',
             data: {
@@ -11,7 +13,7 @@ angular.module('ctscan', ['ctscan.controllers', 'ctscan.services', 'ui.router', 
             }
         })
         .state('signup', {
-            url: '/signup',
+            url: prefix + '/signup',
             templateUrl: 'modules/user/signup/signupView.html',
             controller: 'SignupCtrl',
             data: {
@@ -23,7 +25,7 @@ angular.module('ctscan', ['ctscan.controllers', 'ctscan.services', 'ui.router', 
             controller: 'MainCtrl'
         })
         .state('main.dashboard', {
-            url: '/dashboard',
+            url: prefix + '/dashboard',
             templateUrl: 'modules/main/dashboard/dashboardView.html',
             controller: 'DashboardCtrl'
         })
@@ -31,7 +33,7 @@ angular.module('ctscan', ['ctscan.controllers', 'ctscan.services', 'ui.router', 
 
     $httpProvider.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
 
-    $urlRouterProvider.otherwise('/login');
+    $urlRouterProvider.otherwise(prefix + '/login');
 })
 .factory('authHttpResponseInterceptor', function ($q, $location, $injector, $timeout) {
     return {
@@ -39,12 +41,21 @@ angular.module('ctscan', ['ctscan.controllers', 'ctscan.services', 'ui.router', 
             if (response.status === 401) {
                 console.log("Response 401");
             }
+            if (response.status === 403) {
+                console.log("Response 403", response);
+
+                $injector.get('$state').transitionTo('login');
+            }
             return response || $q.when(response);
         },
         responseError: function (rejection) {
             if (rejection.status === 401) {
                 console.log("Response Error 401", rejection);
-                $location.path('/login');
+                $location.path(prefix + '/login');
+            }
+            if (rejection.status === 403) {
+                console.log("Response Error 403", rejection);
+                $location.path(prefix + '/login');
             }
             return $q.reject(rejection);
         }

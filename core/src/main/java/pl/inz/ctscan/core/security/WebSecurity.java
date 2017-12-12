@@ -25,12 +25,13 @@ public class WebSecurity extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
+        String prefix = "/admin";
+
         http.cors().and().csrf().disable().authorizeRequests()
-                //.antMatchers(HttpMethod.GET, LOG_IN_URL).permitAll()
                 .antMatchers(HttpMethod.POST, SIGN_UP_URL).permitAll()
                 .antMatchers(HttpMethod.GET,
                         "/",
-                        "/login",
+                        prefix + "/login",
                         "/modules/user/login/loginView.html",
                         //"/static/image/**",
                         "/min/**",
