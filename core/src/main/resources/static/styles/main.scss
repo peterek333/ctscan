@@ -1,0 +1,49 @@
+@import 'globalValues';
+
+.main-header {
+  position: fixed;
+  z-index: $header-index;
+
+  height: $header-height;
+  width: 100%;
+
+  background: $header-background;
+}
+
+.main-menu {
+  position: fixed;
+  z-index: $nav-index;
+
+  height: 100%;
+  width: $nav-width;
+
+  background: $nav-background;
+}
+
+.main-body {
+  position: absolute;
+
+  height: 100%;
+  width: 100%;
+
+  padding-top: $header-height;
+  padding-left: $nav-width;
+}
+
+.main-content {
+  width: 100%;
+
+  padding: 15px;
+}
+
+.default-body-background {
+  background: $default-body-background;
+}
+
+.text-middle {
+  text-align: center;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+
+}

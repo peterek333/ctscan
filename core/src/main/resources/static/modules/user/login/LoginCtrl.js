@@ -13,13 +13,13 @@ controllers
 
         RestService.login(loginCredentials)
             .then(function(response) {
-                console.log('odp', response);
                 if(response.status === 200) {
                     var user = {};
                     user.access_token = response.headers('authorization');
 
                     UserService.setCurrentUser(user);
 
+                    location.reload();
                     $scope.goto('DASHBOARD');
                 } else {
                     var type = 'info';
@@ -44,7 +44,6 @@ controllers
 
             RestService.register(signupData)
                 .then(function(response) {
-                    console.log('udane', response);
                     if(response.status === 200) {
                         $scope.signupMode = false;
 

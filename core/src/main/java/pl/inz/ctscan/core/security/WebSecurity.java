@@ -34,6 +34,7 @@ public class WebSecurity extends WebSecurityConfigurerAdapter {
                         prefix + "/login",
                         "/modules/user/login/loginView.html",
                         //"/static/image/**",
+                        "/fonts/**",
                         "/min/**",
                         "/image/**").permitAll()
                 .anyRequest().authenticated()

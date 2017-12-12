@@ -1,6 +1,7 @@
 var prefix = '/admin';
 
-angular.module('ctscan', ['ctscan.controllers', 'ctscan.services', 'ui.router', 'angular-storage', 'ngAnimate', 'ngNotify'])
+angular.module('ctscan', ['ctscan.controllers', 'ctscan.services', 'ctscan.components',
+    'ui.router', 'angular-storage', 'ngAnimate', 'ngNotify'])
 .config(function($stateProvider, $urlRouterProvider, $httpProvider) {
 
     $stateProvider
@@ -51,11 +52,13 @@ angular.module('ctscan', ['ctscan.controllers', 'ctscan.services', 'ui.router', 
         responseError: function (rejection) {
             if (rejection.status === 401) {
                 console.log("Response Error 401", rejection);
-                $location.path(prefix + '/login');
+
+                $injector.get('$state').transitionTo('login');
             }
             if (rejection.status === 403) {
                 console.log("Response Error 403", rejection);
-                $location.path(prefix + '/login');
+
+                $injector.get('$state').transitionTo('login');
             }
             return $q.reject(rejection);
         }
@@ -72,7 +75,7 @@ angular.module('ctscan', ['ctscan.controllers', 'ctscan.services', 'ui.router', 
     })
 })
 .controller('AppCtrl', function($scope, $state, $rootScope, UserService) {
-    var DEFAULT_BODY_CLASS = '';
+    var DEFAULT_BODY_CLASS = 'default-body-background';
     $scope.name = 'Peter';
     $scope.bodyClasses = angular.copy(DEFAULT_BODY_CLASS);
 
@@ -105,3 +108,4 @@ angular.module('ctscan', ['ctscan.controllers', 'ctscan.services', 'ui.router', 
 
 var controllers = angular.module('ctscan.controllers', []);
 var services = angular.module('ctscan.services', []);
+var components = angular.module('ctscan.components', []);
