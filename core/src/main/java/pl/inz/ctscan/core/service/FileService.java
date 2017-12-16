@@ -4,15 +4,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import pl.inz.ctscan.core.utils.FileManager;
 import pl.inz.ctscan.core.utils.ImageConverter;
-import pl.inz.ctscan.db.MeasurementRepository;
-import pl.inz.ctscan.model.ect.Measurement;
+import pl.inz.ctscan.db.ect.MeasurementRepository;
 
 import javax.annotation.PostConstruct;
-import javax.imageio.ImageIO;
 import java.awt.*;
-import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.IOException;
 import java.util.Random;
 
 @Service

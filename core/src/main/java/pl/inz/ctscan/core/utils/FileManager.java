@@ -1,8 +1,10 @@
 package pl.inz.ctscan.core.utils;
 
+import org.springframework.web.multipart.MultipartFile;
 import pl.inz.ctscan.model.ect.Frame;
 import pl.inz.ctscan.model.ect.Measurement;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -17,8 +19,6 @@ import java.util.stream.Stream;
 
 public class FileManager {
 
-    //TODO
-    //Blad pomiarowy - nie tylko ujemne ale tez male odchyly dodatnie
     public Measurement readFileByJavaStream(String path) {
 
         long startTime = System.nanoTime();
@@ -85,6 +85,37 @@ public class FileManager {
 
         if(m.find()) {
             frame.setMilliseconds(Long.parseLong(m.group(0)));
+        }
+    }
+
+    public static void saveAimFile(MultipartFile file, long suffix) throws IOException {
+        byte[] bytes = file.getBytes();
+
+        String filePath = createFilePath(file.getOriginalFilename(), suffix, FileConstants.FILE_AIM_EXTENSION);
+
+        Path path = Paths.get(filePath);
+
+        Files.write(path, bytes);
+    }
+
+    private static String createFilePath(String originalFilename, long suffix, String type) {
+        String filename = originalFilename.substring(0, originalFilename.indexOf('.'));
+        return FileConstants.FILE_AIM_PATH + filename + suffix + type;
+    }
+
+    public static void createNecessaryDirectories() {
+        String[] necessaryDirectories = {
+                FileConstants.FILE_AIM_PATH
+        };
+
+        for(String directoryPath: necessaryDirectories) {
+            File dir = new File(directoryPath);
+
+            if(!dir.exists()) {
+                boolean result = dir.mkdir();
+
+
+            }
         }
     }
 }

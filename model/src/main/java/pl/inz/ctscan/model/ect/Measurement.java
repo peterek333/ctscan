@@ -12,9 +12,6 @@ import java.util.List;
 @Setter
 public class Measurement extends AbstractEntity {
 
-//    private long sizeX;
-//    private long sizeY;
-
     private List<Frame> frames;
 
 

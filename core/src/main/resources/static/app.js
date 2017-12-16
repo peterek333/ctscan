@@ -1,4 +1,10 @@
 var prefix = '/admin';
+var states = {
+    login : { state: 'login', url: prefix + '/login' },
+    signup : { state: 'signup', url: prefix + '/signup' },
+    dashboard : { state: 'main.dashboard', url: prefix + '/dashboard' },
+    restapi : { state: 'main.restapi', url: prefix + '/restapi' }
+};
 
 angular.module('ctscan', ['ctscan.controllers', 'ctscan.services', 'ctscan.components',
     'ui.router', 'angular-storage', 'ngAnimate', 'ngNotify'])
@@ -29,6 +35,11 @@ angular.module('ctscan', ['ctscan.controllers', 'ctscan.services', 'ctscan.compo
             url: prefix + '/dashboard',
             templateUrl: 'modules/main/dashboard/dashboardView.html',
             controller: 'DashboardCtrl'
+        })
+        .state(states.restapi.state, {
+            url: states.restapi.url,
+            templateUrl: 'modules/main/restapi/restapiView.html',
+            controller: 'RestapiCtrl'
         })
     ;
 
@@ -79,21 +90,17 @@ angular.module('ctscan', ['ctscan.controllers', 'ctscan.services', 'ctscan.compo
     $scope.name = 'Peter';
     $scope.bodyClasses = angular.copy(DEFAULT_BODY_CLASS);
 
-    $scope.goto = function(stateName) {
-        switch(stateName) {
-            case 'SIGNUP':
-                $state.go('signup');
-                break;
-            case 'MAIN':
-                $state.go('main');
-                break;
-            case 'DASHBOARD':
-                $state.go('main.dashboard');
-                break;
-        }
+    $scope.$on(events.goto.name, function(event, args) {
+        $scope.goto(args.state);
+    });
+
+    $scope.goto = function(state) {
+        console.log('go to', state);
+        $state.go(state);
     };
 
     $rootScope.$on('$stateChangeSuccess', function(event, toState, toParams, fromState, fromParams) {
+        console.log('statechangesuccess');
         if(angular.isDefined(toState.data) && angular.isDefined(toState.data.bodyClasses)) {
             $scope.bodyClasses = toState.data.bodyClasses;
         } else {

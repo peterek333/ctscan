@@ -1,10 +1,9 @@
 package pl.inz.ctscan.core.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import pl.inz.ctscan.core.service.ECTService;
+import pl.inz.ctscan.model.ect.ECTExperiment;
 import pl.inz.ctscan.model.ect.Measurement;
 
 @RestController
@@ -19,4 +18,8 @@ public class ECTController {
         return ectService.getLastMeasurement();
     }
 
+    @PostMapping("/add")
+    ECTExperiment addECTExperiment(@RequestBody ECTExperiment ectExperiment) {
+        return ectService.addExperiment(ectExperiment);
+    }
 }

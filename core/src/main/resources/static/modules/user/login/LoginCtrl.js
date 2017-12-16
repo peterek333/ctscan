@@ -20,7 +20,7 @@ controllers
                     UserService.setCurrentUser(user);
 
                     location.reload();
-                    $scope.goto('DASHBOARD');
+                    $scope.goto(states.dashboard.state);
                 } else {
                     var type = 'info';
                     if(response.status === 401) {
