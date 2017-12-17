@@ -2,6 +2,7 @@ package pl.inz.ctscan.core.utils;
 
 import org.apache.log4j.Logger;
 import org.springframework.web.multipart.MultipartFile;
+import pl.inz.ctscan.db.ect.FrameRepository;
 import pl.inz.ctscan.model.ect.Frame;
 import pl.inz.ctscan.model.ect.Measurement;
 
@@ -12,7 +13,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -22,7 +22,7 @@ public class FileManager {
 
     private static final Logger logger = Logger.getLogger(FileManager.class);
 
-    public Measurement readFileByJavaStream(String path) {
+    public Measurement readFileByJavaStream(String path, FrameRepository frameRepository) {
 
         long startTime = System.nanoTime();
         Path file = Paths.get(path);
@@ -37,7 +37,7 @@ public class FileManager {
             {
                 if(line.startsWith("## frame")) {
                     if(frame != null) {
-                        measurement.getFrames().add(frame);
+                        saveFrameAndAddToMeasurement(measurement, frame, frameRepository);
                     }
                     frame = new Frame();
 
@@ -62,7 +62,7 @@ public class FileManager {
                 }
             }
             if(frame != null) {
-                measurement.getFrames().add(frame);
+                saveFrameAndAddToMeasurement(measurement, frame, frameRepository);
             }
 
         } catch (IOException ioe){
@@ -75,6 +75,12 @@ public class FileManager {
         logger.info("Total elapsed time: " + elapsedTimeInMillis + " ms");
 
         return measurement;
+    }
+
+    private void saveFrameAndAddToMeasurement(Measurement measurement, Frame frame, FrameRepository frameRepository) {
+        frame = frameRepository.save(frame);
+
+        measurement.getFramesId().add(frame.getId());
     }
 
     private void setNumberAndMilliseconds(Frame frame, String line) {

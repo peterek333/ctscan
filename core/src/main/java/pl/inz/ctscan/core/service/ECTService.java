@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 import pl.inz.ctscan.core.utils.FileManager;
 import pl.inz.ctscan.core.utils.MongoModelUtil;
 import pl.inz.ctscan.db.ect.ECTExperimentRepository;
+import pl.inz.ctscan.db.ect.FrameRepository;
 import pl.inz.ctscan.db.ect.MeasurementRepository;
 import pl.inz.ctscan.model.ect.ECTExperiment;
 import pl.inz.ctscan.model.ect.Measurement;
@@ -15,6 +16,8 @@ public class ECTService {
 
     private final MeasurementRepository measurementRepository;
 
+    private final FrameRepository frameRepository;
+
     final
     ECTExperimentRepository ectExperimentRepository;
 
@@ -22,10 +25,11 @@ public class ECTService {
     FileManager fileManager;
 
     @Autowired
-    public ECTService(MeasurementRepository measurementRepository, ECTExperimentRepository ectExperimentRepository, FileManager fileManager) {
+    public ECTService(MeasurementRepository measurementRepository, ECTExperimentRepository ectExperimentRepository, FileManager fileManager, FrameRepository frameRepository) {
         this.measurementRepository = measurementRepository;
         this.ectExperimentRepository = ectExperimentRepository;
         this.fileManager = fileManager;
+        this.frameRepository = frameRepository;
     }
 
     public Measurement getLastMeasurement() {
@@ -45,7 +49,7 @@ public class ECTService {
     }
 
     public Measurement addMeasurementFromFile(FileData fileData) {
-        Measurement measurement = fileManager.readFileByJavaStream(fileData.getFullPath());
+        Measurement measurement = fileManager.readFileByJavaStream(fileData.getFullPath(), frameRepository);
 
         return measurementRepository.save(measurement);
     }
