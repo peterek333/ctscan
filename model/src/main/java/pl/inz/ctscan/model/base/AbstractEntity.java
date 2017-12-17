@@ -2,6 +2,7 @@ package pl.inz.ctscan.model.base;
 
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.LastModifiedDate;
@@ -25,4 +26,7 @@ public abstract class AbstractEntity {
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
     @LastModifiedDate
     private Date lastModifiedDate;
+
+    @CreatedBy
+    private String createdBy;
 }

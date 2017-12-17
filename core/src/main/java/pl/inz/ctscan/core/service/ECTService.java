@@ -2,6 +2,7 @@ package pl.inz.ctscan.core.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import pl.inz.ctscan.core.utils.MongoModelUtil;
 import pl.inz.ctscan.db.ect.ECTExperimentRepository;
 import pl.inz.ctscan.db.ect.MeasurementRepository;
 import pl.inz.ctscan.model.ect.ECTExperiment;
@@ -26,6 +27,14 @@ public class ECTService {
     }
 
     public ECTExperiment addExperiment(ECTExperiment ectExperiment) {
+        MongoModelUtil.setCreatedByIfNull(ectExperiment);
+
         return ectExperimentRepository.save(ectExperiment);
+    }
+
+    public boolean experimentExist(String experimentId) {
+        ECTExperiment ectExperiment = ectExperimentRepository.findOne(experimentId);
+
+        return ectExperiment != null;
     }
 }

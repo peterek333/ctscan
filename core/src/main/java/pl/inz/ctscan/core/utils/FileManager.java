@@ -1,5 +1,6 @@
 package pl.inz.ctscan.core.utils;
 
+import org.apache.log4j.Logger;
 import org.springframework.web.multipart.MultipartFile;
 import pl.inz.ctscan.model.ect.Frame;
 import pl.inz.ctscan.model.ect.Measurement;
@@ -18,6 +19,8 @@ import java.util.regex.Pattern;
 import java.util.stream.Stream;
 
 public class FileManager {
+
+    private static final Logger logger = Logger.getLogger(FileManager.class);
 
     public Measurement readFileByJavaStream(String path) {
 
@@ -88,19 +91,22 @@ public class FileManager {
         }
     }
 
-    public static void saveAimFile(MultipartFile file, long suffix) throws IOException {
+    public void saveAimFile(MultipartFile file, String filePath) throws IOException {
         byte[] bytes = file.getBytes();
-
-        String filePath = createFilePath(file.getOriginalFilename(), suffix, FileConstants.FILE_AIM_EXTENSION);
 
         Path path = Paths.get(filePath);
 
         Files.write(path, bytes);
     }
 
-    private static String createFilePath(String originalFilename, long suffix, String type) {
+    public String concatFilePath(String originalFilename, long suffix, String type) {
         String filename = originalFilename.substring(0, originalFilename.indexOf('.'));
-        return FileConstants.FILE_AIM_PATH + filename + suffix + type;
+        return FileConstants.FILE_AIM_PATH + filename + type + suffix;
+    }
+
+    public static String getFilenameFromFilePath(String filePath) {
+        int OFFSET = 1;
+        return filePath.substring(filePath.lastIndexOf('/') + OFFSET, filePath.length());
     }
 
     public static void createNecessaryDirectories() {
@@ -114,8 +120,15 @@ public class FileManager {
             if(!dir.exists()) {
                 boolean result = dir.mkdir();
 
-
+                logger.info("Directory: " + directoryPath + " was created");
+            } else {
+                logger.info("Directory: " + directoryPath + " exists");
             }
         }
+    }
+
+    public static String getDirPathFromFilePath(String filePath) {
+        int OFFSET = 1;
+        return filePath.substring(0, filePath.lastIndexOf('/') + OFFSET);
     }
 }

@@ -17,4 +17,14 @@ public class ResultProducer {
 
         return response;
     }
+
+    public static Map<String, Object> createResponseByReflection(Object... objects) {
+        Map<String, Object> response = new HashMap<>();
+
+        for(Object o: objects) {
+            response.put(o.getClass().getSimpleName(), o);
+        }
+
+        return response;
+    }
 }
