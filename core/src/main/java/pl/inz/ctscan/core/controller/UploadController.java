@@ -10,8 +10,11 @@ import pl.inz.ctscan.core.service.ECTService;
 import pl.inz.ctscan.core.service.RelationService;
 import pl.inz.ctscan.core.service.UploadService;
 import pl.inz.ctscan.core.utils.ResultProducer;
+import pl.inz.ctscan.model.ect.Measurement;
 import pl.inz.ctscan.model.file.FileData;
 import pl.inz.ctscan.model.relation.RelFileDataExperiment;
+import pl.inz.ctscan.model.relation.RelFileDataMeasurement;
+import pl.inz.ctscan.model.relation.RelMeasurementExperiment;
 
 import java.io.IOException;
 import java.util.Map;
@@ -45,15 +48,25 @@ public class UploadController {
         //Zapisanie pliku
         FileData fileData = uploadService.uploadFile(file);
 
-        //Nawiązanie relacji między dodanym plikiem, a eksperymentem
+        //Przetworzenie pliku na dane pomiarowe
+        Measurement measurement = ectService.addMeasurementFromFile(fileData);
+
+        //Nawiązanie relacji między plikiem, a danymi pomiarowymi
+        RelFileDataMeasurement relFileDataMeasurement =
+                relationService.addRelFileDataMeasurement(fileData.getId(), measurement.getId());
+
+        //Nawiązanie relacji między eksperymentem, a dodanym plikiem oraz danymi pomiarowymi
         if(ectExperimentId != null) {
             RelFileDataExperiment relFileDataExperiment =
                     relationService.addRelFileDataExperimentIfExperimentExist(fileData, ectExperimentId);
 
-            return ResultProducer.createResponseByReflection(fileData, relFileDataExperiment);
+            RelMeasurementExperiment relMeasurementExperiment =
+                    relationService.addRelMeasurementExperiment(measurement.getId(), ectExperimentId);
+
+            return ResultProducer.createResponseByReflection(fileData, relFileDataMeasurement, relFileDataExperiment, relMeasurementExperiment);
         }
 
-        return ResultProducer.createResponseByReflection(fileData,
+        return ResultProducer.createResponseByReflection(fileData, relFileDataMeasurement,
                 new Exception("Experiment doesn't exist but file upload successfully"));
     }
 }

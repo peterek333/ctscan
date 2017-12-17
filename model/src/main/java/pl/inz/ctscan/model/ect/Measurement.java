@@ -14,7 +14,6 @@ public class Measurement extends AbstractEntity {
 
     private List<Frame> frames;
 
-
     public Measurement() {
         frames = new ArrayList<>();
     }

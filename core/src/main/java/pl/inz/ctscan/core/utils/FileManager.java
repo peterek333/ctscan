@@ -35,7 +35,6 @@ public class FileManager {
 
             for( String line : (Iterable<String>) lines::iterator )
             {
-                //System.out.println(line);
                 if(line.startsWith("## frame")) {
                     if(frame != null) {
                         measurement.getFrames().add(frame);
@@ -45,7 +44,6 @@ public class FileManager {
                     setNumberAndMilliseconds(frame, line);
 
                     frame.setData(new ArrayList<>());
-                //!line.startsWith("##")
                 } else if(line.length() > 0 && !line.startsWith("##")) {
                     //wszystkie biale znaki
                     String[] splitted = line.split("\\s+");
@@ -73,8 +71,8 @@ public class FileManager {
 
         long endTime = System.nanoTime();
         long elapsedTimeInMillis = TimeUnit.MILLISECONDS.convert((endTime - startTime), TimeUnit.NANOSECONDS);
-        System.out.println("Total elapsed time: " + elapsedTimeInMillis + " ms");
-        System.out.println("Total elapsed time: " + elapsedTimeInMillis + " ms");
+        logger.info("Prepared measurement from file path: " + path);
+        logger.info("Total elapsed time: " + elapsedTimeInMillis + " ms");
 
         return measurement;
     }
@@ -97,6 +95,8 @@ public class FileManager {
         Path path = Paths.get(filePath);
 
         Files.write(path, bytes);
+
+        logger.info("File added. Path: " + filePath);
     }
 
     public String concatFilePath(String originalFilename, long suffix, String type) {
