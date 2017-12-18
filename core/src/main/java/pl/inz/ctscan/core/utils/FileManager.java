@@ -3,6 +3,7 @@ package pl.inz.ctscan.core.utils;
 import org.apache.log4j.Logger;
 import org.springframework.web.multipart.MultipartFile;
 import pl.inz.ctscan.db.ect.FrameRepository;
+import pl.inz.ctscan.model.base.AbstractEntity;
 import pl.inz.ctscan.model.ect.Frame;
 import pl.inz.ctscan.model.ect.Measurement;
 
@@ -13,9 +14,11 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class FileManager {
@@ -27,6 +30,7 @@ public class FileManager {
         long startTime = System.nanoTime();
         Path file = Paths.get(path);
         Measurement measurement = new Measurement();
+        List<Frame> frames = new ArrayList<>();
         try
         {
             Stream<String> lines = Files.lines( file, StandardCharsets.UTF_8 );
@@ -37,7 +41,8 @@ public class FileManager {
             {
                 if(line.startsWith("## frame")) {
                     if(frame != null) {
-                        saveFrameAndAddToMeasurement(measurement, frame, frameRepository);
+                        //saveFrameAndAddToMeasurement(measurement, frame, frameRepository);
+                        frames.add(frame);
                     }
                     frame = new Frame();
 
@@ -62,12 +67,17 @@ public class FileManager {
                 }
             }
             if(frame != null) {
-                saveFrameAndAddToMeasurement(measurement, frame, frameRepository);
+                //saveFrameAndAddToMeasurement(measurement, frame, frameRepository);
+                frames.add(frame);
             }
 
         } catch (IOException ioe){
             ioe.printStackTrace();
         }
+
+        frames = frameRepository.save(frames);
+
+        //measurement.setFramesId(frames.stream().map(AbstractEntity::getId).collect(Collectors.toList()));
 
         long endTime = System.nanoTime();
         long elapsedTimeInMillis = TimeUnit.MILLISECONDS.convert((endTime - startTime), TimeUnit.NANOSECONDS);
@@ -76,6 +86,61 @@ public class FileManager {
 
         return measurement;
     }
+
+    public List<Frame> processAimFrames(String path) {
+        logger.info("Start prepare frames from file path: " + path);
+        long startTime = System.nanoTime();
+        Path file = Paths.get(path);
+        List<Frame> frames = new ArrayList<>();
+        try {
+            Stream<String> lines = Files.lines(file, StandardCharsets.UTF_8);
+
+            Frame frame = null;
+
+            for (String line : (Iterable<String>) lines::iterator) {
+                if (line.startsWith("## frame")) {
+                    if (frame != null) {
+                        frames.add(frame);
+                    }
+                    frame = new Frame();
+
+                    setNumberAndMilliseconds(frame, line);
+
+                    frame.setData(new ArrayList<>());
+                } else if (line.length() > 0 && !line.startsWith("##")) {
+                    //wszystkie biale znaki
+                    String[] splitted = line.split("\\s+");
+
+                    frame.getData().add(new ArrayList<>());
+
+                    for (String data : splitted) {
+                        float d = Float.parseFloat(data);
+                        if (d > 0) {
+                            frame.getData().get(frame.getData().size() - 1).add(d);
+                        } else {
+                            frame.getData().get(frame.getData().size() - 1).add(0F);
+                        }
+                    }
+
+                }
+            }
+            if (frame != null) {
+                frames.add(frame);
+            }
+
+        } catch (IOException ioe) {
+            ioe.printStackTrace();
+        }
+
+        //measurement.setFramesId(frames.stream().map(AbstractEntity::getId).collect(Collectors.toList()));
+
+        long endTime = System.nanoTime();
+        long elapsedTimeInMillis = TimeUnit.MILLISECONDS.convert((endTime - startTime), TimeUnit.NANOSECONDS);
+        logger.info("Total elapsed time: " + elapsedTimeInMillis + " ms");
+
+        return frames;
+    }
+
 
     private void saveFrameAndAddToMeasurement(Measurement measurement, Frame frame, FrameRepository frameRepository) {
         frame = frameRepository.save(frame);

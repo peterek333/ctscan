@@ -74,6 +74,13 @@
 			<artifactId>log4j</artifactId>
 			<version>RELEASE</version>
 		</dependency>
+
+		<!-- THREADS -->
+		<dependency>
+			<groupId>com.google.guava</groupId>
+			<artifactId>guava</artifactId>
+			<version>23.5-jre</version>
+		</dependency>
 	</dependencies>
 
 	<build>

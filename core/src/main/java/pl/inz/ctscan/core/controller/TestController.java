@@ -3,6 +3,7 @@ package pl.inz.ctscan.core.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import pl.inz.ctscan.core.service.TestService;
+import pl.inz.ctscan.core.service.queue.QueueService;
 import pl.inz.ctscan.model.TestMessage;
 
 import java.util.List;
@@ -11,8 +12,15 @@ import java.util.List;
 @RequestMapping("/test")
 public class TestController {
 
+    private final TestService testService;
+
+    private final QueueService queueService;
+
     @Autowired
-    private TestService testService;
+    public TestController(TestService testService, QueueService queueService) {
+        this.testService = testService;
+        this.queueService = queueService;
+    }
 
     @GetMapping("/{pathParam}")
     public TestMessage getTestMessage(@PathVariable String pathParam, @RequestParam String reqParam) {
@@ -29,5 +37,19 @@ public class TestController {
     @PostMapping("/list")
     public List<TestMessage> listTestMessage() {
         return testService.listTestMessage();
+    }
+
+    int start = 0;
+
+    @GetMapping("/executor")
+    public boolean executeAim() throws InterruptedException {
+        String measurementId = "5a36677e8f032a3790860966";
+        String path = "/home/neo/_argo/tomografia/test/aim/test_76mb_full.aim" + start++;
+
+        queueService.processAimFrames(measurementId, path);
+
+        System.out.println("Poszedl thread");
+
+        return true;
     }
 }
