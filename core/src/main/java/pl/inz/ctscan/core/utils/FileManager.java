@@ -3,7 +3,6 @@ package pl.inz.ctscan.core.utils;
 import org.apache.log4j.Logger;
 import org.springframework.web.multipart.MultipartFile;
 import pl.inz.ctscan.db.ect.FrameRepository;
-import pl.inz.ctscan.model.base.AbstractEntity;
 import pl.inz.ctscan.model.ect.Frame;
 import pl.inz.ctscan.model.ect.Measurement;
 
@@ -18,11 +17,10 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class FileManager {
-
+/*
     private static final Logger logger = Logger.getLogger(FileManager.class);
 
     public Measurement readFileByJavaStream(String path, FrameRepository frameRepository) {
@@ -75,9 +73,9 @@ public class FileManager {
             ioe.printStackTrace();
         }
 
-        frames = frameRepository.save(frames);
+        //frames = frameRepository.save(frames);
 
-        //measurement.setFramesId(frames.stream().map(AbstractEntity::getId).collect(Collectors.toList()));
+        //measurement.setFramesId(frames.stream().map(ManualEntity::getId).collect(Collectors.toList()));
 
         long endTime = System.nanoTime();
         long elapsedTimeInMillis = TimeUnit.MILLISECONDS.convert((endTime - startTime), TimeUnit.NANOSECONDS);
@@ -132,7 +130,7 @@ public class FileManager {
             ioe.printStackTrace();
         }
 
-        //measurement.setFramesId(frames.stream().map(AbstractEntity::getId).collect(Collectors.toList()));
+        //measurement.setFramesId(frames.stream().map(ManualEntity::getId).collect(Collectors.toList()));
 
         long endTime = System.nanoTime();
         long elapsedTimeInMillis = TimeUnit.MILLISECONDS.convert((endTime - startTime), TimeUnit.NANOSECONDS);
@@ -145,7 +143,7 @@ public class FileManager {
     private void saveFrameAndAddToMeasurement(Measurement measurement, Frame frame, FrameRepository frameRepository) {
         frame = frameRepository.save(frame);
 
-        measurement.getFramesId().add(frame.getId());
+        //measurement.getFramesId().add(frame.getId());
     }
 
     private void setNumberAndMilliseconds(Frame frame, String line) {
@@ -202,4 +200,5 @@ public class FileManager {
         int OFFSET = 1;
         return filePath.substring(0, filePath.lastIndexOf('/') + OFFSET);
     }
+    */
 }

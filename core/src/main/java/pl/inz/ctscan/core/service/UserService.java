@@ -34,7 +34,7 @@ public class UserService implements UserDetailsService {
     public void signUp(ApplicationUser user) {
         user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
 
-        applicationUserRepository.insert(user);
+        applicationUserRepository.save(user);
     }
 
     @Override

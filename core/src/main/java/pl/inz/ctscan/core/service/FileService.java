@@ -10,9 +10,9 @@ import javax.annotation.PostConstruct;
 import java.awt.*;
 import java.util.Random;
 
-@Service
+//@Service
 public class FileService {
-
+/*
     final FileManager fileManager;
 
     final MeasurementRepository measurementRepository;
@@ -54,4 +54,5 @@ public class FileService {
         imageConverter.createImageByAWT("/home/neo/_argo/tomografia/test/test_image2.png", "png", colors);
 
     }
+    */
 }

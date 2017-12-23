@@ -31,6 +31,6 @@ public class TestService {
     }
 
     public TestMessage insertTestMessage(TestMessage testMessage) {
-        return testRepository.insert(testMessage);
+        return testRepository.save(testMessage);
     }
 }

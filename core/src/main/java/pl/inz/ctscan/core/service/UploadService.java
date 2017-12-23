@@ -12,9 +12,9 @@ import pl.inz.ctscan.model.file.FileType;
 
 import java.io.IOException;
 
-@Service
+//@Service
 public class UploadService {
-
+/*
     final
     FileManager fileManager;
 
@@ -51,4 +51,5 @@ public class UploadService {
                 .suffix(suffix)
                 .build();
     }
+    */
 }

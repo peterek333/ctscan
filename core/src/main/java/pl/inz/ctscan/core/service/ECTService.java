@@ -7,42 +7,53 @@ import pl.inz.ctscan.core.utils.MongoModelUtil;
 import pl.inz.ctscan.db.ect.ECTExperimentRepository;
 import pl.inz.ctscan.db.ect.FrameRepository;
 import pl.inz.ctscan.db.ect.MeasurementRepository;
+import pl.inz.ctscan.db.x.XExperimentRepository;
 import pl.inz.ctscan.model.ect.ECTExperiment;
 import pl.inz.ctscan.model.ect.Measurement;
 import pl.inz.ctscan.model.file.FileData;
+import pl.inz.ctscan.model.x.XExperiment;
 
 @Service
 public class ECTService {
-
-    private final MeasurementRepository measurementRepository;
-
-    private final FrameRepository frameRepository;
+//
+//    private final MeasurementRepository measurementRepository;
+//
+//    private final FrameRepository frameRepository;
 
     final
     ECTExperimentRepository ectExperimentRepository;
 
     final
-    FileManager fileManager;
+    XExperimentRepository xExperimentRepository;
+
+//    final
+//    FileManager fileManager;
 
     @Autowired
-    public ECTService(MeasurementRepository measurementRepository, ECTExperimentRepository ectExperimentRepository, FileManager fileManager, FrameRepository frameRepository) {
-        this.measurementRepository = measurementRepository;
+    public ECTService(
+            //MeasurementRepository measurementRepository,
+            ECTExperimentRepository ectExperimentRepository, XExperimentRepository xExperimentRepository) {
+            //FileManager fileManager,
+            //FrameRepository frameRepository) {
+        //this.measurementRepository = measurementRepository;
         this.ectExperimentRepository = ectExperimentRepository;
-        this.fileManager = fileManager;
-        this.frameRepository = frameRepository;
+        //this.fileManager = fileManager;
+        //this.frameRepository = frameRepository;
+        this.xExperimentRepository = xExperimentRepository;
     }
 
-    public Measurement getLastMeasurement() {
-        return measurementRepository.findTopByOrderByCreatedDateDesc();
-    }
+//    public Measurement getLastMeasurement() {
+//        return measurementRepository.findTopByOrderByCreatedDateDesc();
+//    }
 
     public ECTExperiment addExperiment(ECTExperiment ectExperiment) {
-        MongoModelUtil.setCreatedByIfNull(ectExperiment);
-
         return ectExperimentRepository.save(ectExperiment);
     }
-
-    public boolean experimentExist(String experimentId) {
+    public XExperiment addExperiment(XExperiment ectExperiment) {
+        return xExperimentRepository.save(ectExperiment);
+    }
+/*
+    public boolean experimentExist(Long experimentId) {
         ECTExperiment ectExperiment = ectExperimentRepository.findOne(experimentId);
 
         return ectExperiment != null;
@@ -53,4 +64,5 @@ public class ECTService {
 
         return measurementRepository.save(measurement);
     }
+*/
 }

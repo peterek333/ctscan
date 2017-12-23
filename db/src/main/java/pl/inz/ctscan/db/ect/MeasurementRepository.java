@@ -1,10 +1,10 @@
 package pl.inz.ctscan.db.ect;
 
-import org.springframework.data.mongodb.repository.MongoRepository;
+import org.springframework.data.repository.CrudRepository;
 import pl.inz.ctscan.model.ect.Measurement;
 
-public interface MeasurementRepository extends MongoRepository<Measurement, String> {
-
-    Measurement findById(String id);
-    Measurement findTopByOrderByCreatedDateDesc();
+public interface MeasurementRepository {//extends CrudRepository<Measurement, Long> {
+//
+//    Measurement findById(Long id);
+//    Measurement findTopByOrderByCreatedDateDesc();
 }

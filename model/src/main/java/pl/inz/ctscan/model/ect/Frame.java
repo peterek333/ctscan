@@ -1,7 +1,7 @@
 package pl.inz.ctscan.model.ect;
 
 import lombok.*;
-import pl.inz.ctscan.model.base.AbstractEntity;
+import pl.inz.ctscan.model.base.ManualEntity;
 
 import java.util.List;
 
@@ -9,7 +9,7 @@ import java.util.List;
 @Setter
 @NoArgsConstructor
 @RequiredArgsConstructor
-public class Frame extends AbstractEntity {
+public class Frame extends ManualEntity {
 
     @NonNull
     private long number;

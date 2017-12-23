@@ -4,7 +4,7 @@ import org.apache.log4j.Logger;
 import pl.inz.ctscan.core.utils.FileManager;
 import pl.inz.ctscan.db.ect.FrameRepository;
 import pl.inz.ctscan.db.ect.MeasurementRepository;
-import pl.inz.ctscan.model.base.AbstractEntity;
+import pl.inz.ctscan.model.base.ManualEntity;
 import pl.inz.ctscan.model.ect.Frame;
 import pl.inz.ctscan.model.ect.Measurement;
 
@@ -12,8 +12,8 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
-public class ProcessFileThread implements Runnable {
-
+public class ProcessFileThread {// implements Runnable {
+/*
     private static final Logger logger = Logger.getLogger(ProcessFileThread.class);
 
     private FileManager fileManager;
@@ -22,12 +22,12 @@ public class ProcessFileThread implements Runnable {
 
     private MeasurementRepository measurementRepository;
 
-    private String measurementId;
+    private Long measurementId;
 
     private String path;
 
     public ProcessFileThread(FileManager fileManager, FrameRepository frameRepository,
-                             MeasurementRepository measurementRepository, String measurementId, String path) {
+                             MeasurementRepository measurementRepository, Long measurementId, String path) {
         this.fileManager = fileManager;
         this.frameRepository = frameRepository;
         this.measurementRepository = measurementRepository;
@@ -44,10 +44,10 @@ public class ProcessFileThread implements Runnable {
             List<Frame> frames = fileManager.processAimFrames(path);
             logger.info("Przetworzenie pliku: " + TimeUnit.MILLISECONDS.convert((System.nanoTime() - startTime), TimeUnit.NANOSECONDS));
 
-            frames = frameRepository.save(frames);
+            //frames = frameRepository.save(frames.iterator());
             logger.info("Zapis " + frames.size() + " frames do bazy: " + TimeUnit.MILLISECONDS.convert((System.nanoTime() - startTime), TimeUnit.NANOSECONDS));
 
-            measurement.setFramesId(frames.stream().map(AbstractEntity::getId).collect(Collectors.toList()));
+            //measurement.setFramesId(frames.stream().map(ManualEntity::getId).collect(Collectors.toList()));
             logger.info("Ustawienie framesId w measurement: " + TimeUnit.MILLISECONDS.convert((System.nanoTime() - startTime), TimeUnit.NANOSECONDS));
 
             measurementRepository.save(measurement);
@@ -56,4 +56,5 @@ public class ProcessFileThread implements Runnable {
             logger.info("Brak obiektu measurement w bazie o id: " + measurementId);
         }
     }
+    */
 }

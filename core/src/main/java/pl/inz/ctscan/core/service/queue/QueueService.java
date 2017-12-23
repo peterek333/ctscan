@@ -1,6 +1,5 @@
 package pl.inz.ctscan.core.service.queue;
 
-import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import pl.inz.ctscan.core.utils.FileManager;
@@ -8,14 +7,13 @@ import pl.inz.ctscan.core.utils.queue.ProcessFileThread;
 import pl.inz.ctscan.core.utils.queue.pool.ProcessFileExecutor;
 import pl.inz.ctscan.db.ect.FrameRepository;
 import pl.inz.ctscan.db.ect.MeasurementRepository;
-import pl.inz.ctscan.model.ect.Measurement;
 
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 
-@Service
+//@Service
 public class QueueService {
-
+/*
     private final ProcessFileExecutor processFileExecutor;
 
     private final FileManager fileManager;
@@ -37,7 +35,7 @@ public class QueueService {
         processFileThreadsQueue = new ArrayBlockingQueue<>(MAX_THREADS);
     }
 
-    public void processAimFrames(String measurementId, String path) throws InterruptedException {
+    public void processAimFrames(Long measurementId, String path) throws InterruptedException {
         ProcessFileThread processFileThread =
                 new ProcessFileThread(fileManager, frameRepository, measurementRepository, measurementId, path);
 
@@ -47,5 +45,5 @@ public class QueueService {
     public void processAimFramesByConsumer(String measurementId, String path) {
 
     }
-
+*/
 }
