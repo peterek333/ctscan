@@ -12,9 +12,9 @@ import pl.inz.ctscan.model.file.FileType;
 
 import java.io.IOException;
 
-//@Service
+@Service
 public class UploadService {
-/*
+
     final
     FileManager fileManager;
 
@@ -36,7 +36,6 @@ public class UploadService {
         fileManager.saveAimFile(file, filePath);
 
         FileData fileData = prepareFileData(file, filePath, fileType, "" + suffix);
-        MongoModelUtil.setCreatedByIfNull(fileData);
 
         return fileDataRepository.save(fileData);
     }
@@ -51,5 +50,5 @@ public class UploadService {
                 .suffix(suffix)
                 .build();
     }
-    */
+
 }

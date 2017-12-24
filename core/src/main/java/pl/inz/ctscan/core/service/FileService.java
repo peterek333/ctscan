@@ -29,7 +29,7 @@ public class FileService {
 
     @PostConstruct
     public void init() {
-        //Measurement m = fileManager.readFileByJavaStream("/home/neo/_argo/tomografia/test/test_3.aim");
+        //Measurement m = fileManager.convertAimFileToFrames("/home/neo/_argo/tomografia/test/test_3.aim");
 
         //measurementRepository.save(m);
 

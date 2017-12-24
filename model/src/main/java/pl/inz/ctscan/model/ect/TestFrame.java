@@ -1,7 +1,8 @@
 package pl.inz.ctscan.model.ect;
 
-import lombok.*;
-import pl.inz.ctscan.model.base.ManualEntity;
+import lombok.Getter;
+import lombok.NonNull;
+import lombok.Setter;
 
 import javax.persistence.*;
 import java.util.List;
@@ -9,7 +10,7 @@ import java.util.List;
 @Getter
 @Setter
 @Entity
-public class Frame {
+public class TestFrame {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -21,10 +22,8 @@ public class Frame {
     @NonNull
     private long milliseconds;
 
-    //private float
+//    @OneToMany(mappedBy = "frame")
+//    private List<TestFrameRow> rows;
 
-    //private List<List<Float>> data;
 
-    @Column(length = 10000)
-    private String data;
 }

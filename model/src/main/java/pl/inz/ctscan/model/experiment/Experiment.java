@@ -13,16 +13,10 @@ import java.util.Set;
 @Getter
 @Setter
 @NoArgsConstructor
-@MappedSuperclass
-//@Entity
-//@Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
-public abstract class Experiment extends ManualEntity {
+@Entity
+public class Experiment extends ManualEntity {
 
     private String title;
-
-//    @OneToMany(fetch = FetchType.EAGER,
-//            cascade = CascadeType.ALL)
-//    private List<Keyword> keywords;
 
     @ElementCollection
     private Set<String> keywords = new HashSet<>();

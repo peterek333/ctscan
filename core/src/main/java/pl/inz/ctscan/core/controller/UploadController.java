@@ -1,15 +1,11 @@
 package pl.inz.ctscan.core.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import pl.inz.ctscan.core.service.ECTService;
 import pl.inz.ctscan.core.service.UploadService;
 import pl.inz.ctscan.core.utils.ResultProducer;
-import pl.inz.ctscan.model.ect.Measurement;
 import pl.inz.ctscan.model.file.FileData;
 
 import java.util.Map;
@@ -17,7 +13,7 @@ import java.util.Map;
 @RestController
 @RequestMapping("/upload")
 public class UploadController {
-/*
+
     final
     UploadService uploadService;
 
@@ -32,7 +28,7 @@ public class UploadController {
 
     @PostMapping("/ect/aim")
     public Map<String, Object> uploadAimFile(@RequestParam("file") MultipartFile file,
-                                             @RequestParam(value = "id", required = false) String ectExperimentId) throws Exception {
+                                             @RequestParam(value = "id", required = false) Long experimentId) throws Exception {
         if (file.isEmpty()) {
             return ResultProducer.createResponse(false, "File is empty");
         }
@@ -40,10 +36,10 @@ public class UploadController {
         FileData fileData = uploadService.uploadFile(file);
 
         //Przetworzenie pliku na dane pomiarowe
-        //Measurement measurement = ectService.addMeasurementFromFile(fileData);
+        ectService.addFramesFromFile(fileData);
 
         //Nawiązanie relacji między eksperymentem, a dodanym plikiem oraz danymi pomiarowymi
-        if(ectExperimentId != null) {
+        if(experimentId != null) {
 
             return ResultProducer.createResponseByReflection(fileData);
         }
@@ -51,5 +47,7 @@ public class UploadController {
         return ResultProducer.createResponseByReflection(fileData,
                 new Exception("Experiment doesn't exist but file upload successfully"));
     }
-    */
+
+//    @GetMapping("/filedata/{")
+
 }
