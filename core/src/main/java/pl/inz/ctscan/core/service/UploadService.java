@@ -5,7 +5,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import pl.inz.ctscan.core.utils.FileConstants;
 import pl.inz.ctscan.core.utils.FileManager;
-import pl.inz.ctscan.core.utils.MongoModelUtil;
 import pl.inz.ctscan.db.file.FileDataRepository;
 import pl.inz.ctscan.model.file.FileData;
 import pl.inz.ctscan.model.file.FileType;

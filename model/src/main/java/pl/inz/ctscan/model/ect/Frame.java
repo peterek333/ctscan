@@ -15,6 +15,8 @@ public class Frame {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
+    private Long ectDataId;
+
     @NonNull
     private long number;
 

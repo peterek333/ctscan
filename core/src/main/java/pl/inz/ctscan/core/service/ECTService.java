@@ -43,16 +43,25 @@ public class ECTService {
     }
 
     public ECTData addFramesFromFile(String path, ECTData ectData) {
+        changeEctDataStatus(ectData, DataStatus.PROCESSING);
+
         Map<String, Object> data = fileManager.convertAimFileToFrames(path);
 
-        frameRepository.save((List<Frame>) data.get(ConverterMetadata.FRAMES));
+        List<Frame> frames = (List<Frame>) data.get(ConverterMetadata.FRAMES);
+        frames.parallelStream().forEach(f -> f.setEctDataId(ectData.getId()));
+        frameRepository.save(frames);
 
         String avg = (String) data.get(ConverterMetadata.DATA_AVERAGE);
-
         ectData.setDataAverage(avg);
         ectData.setStatus(DataStatus.FINISHED);
 
         return ectDataRepository.save(ectData);
+    }
+
+    private void changeEctDataStatus(ECTData ectData, DataStatus processing) {
+        ectData.setStatus(processing);
+
+        ectDataRepository.save(ectData);
     }
 
     private ECTData prepareECTData(Long fileDataId, Long experimentId) {

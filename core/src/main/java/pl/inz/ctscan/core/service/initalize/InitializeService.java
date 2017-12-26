@@ -5,12 +5,11 @@ import pl.inz.ctscan.core.utils.FileManager;
 
 import javax.annotation.PostConstruct;
 
-//@Service
+@Service
 public class InitializeService {
-/*
+
     @PostConstruct
     public void init() {
         FileManager.createNecessaryDirectories();
     }
-    */
 }
