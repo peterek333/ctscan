@@ -1,10 +1,10 @@
 package pl.inz.ctscan.model.ect;
 
-import lombok.*;
-import pl.inz.ctscan.model.base.ManualEntity;
+import lombok.Getter;
+import lombok.NonNull;
+import lombok.Setter;
 
 import javax.persistence.*;
-import java.util.List;
 
 @Getter
 @Setter
@@ -21,10 +21,9 @@ public class Frame {
     @NonNull
     private long milliseconds;
 
-    //private float
-
-    //private List<List<Float>> data;
-
     @Column(length = 10000)
     private String data;
+
+    @Column(length = 450)
+    private String rowAverage;
 }

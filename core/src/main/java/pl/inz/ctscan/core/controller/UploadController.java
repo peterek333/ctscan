@@ -6,9 +6,8 @@ import org.springframework.web.multipart.MultipartFile;
 import pl.inz.ctscan.core.service.ECTService;
 import pl.inz.ctscan.core.service.UploadService;
 import pl.inz.ctscan.core.utils.ResultProducer;
+import pl.inz.ctscan.model.ect.ECTData;
 import pl.inz.ctscan.model.file.FileData;
-
-import java.util.Map;
 
 @RestController
 @RequestMapping("/upload")
@@ -27,27 +26,21 @@ public class UploadController {
     }
 
     @PostMapping("/ect/aim")
-    public Map<String, Object> uploadAimFile(@RequestParam("file") MultipartFile file,
-                                             @RequestParam(value = "id", required = false) Long experimentId) throws Exception {
+    public ECTData uploadAimFile(@RequestParam("file") MultipartFile file,
+                                 @RequestParam(value = "id", required = false) Long experimentId) throws Exception {
         if (file.isEmpty()) {
-            return ResultProducer.createResponse(false, "File is empty");
+            throw new Exception("File is empty");
         }
         //Zapisanie pliku
         FileData fileData = uploadService.uploadFile(file);
 
+        //Relacja między plikiem do przetworzenia, a eksperymentu(o ile podano)
+        ECTData ectData = ectService.createECTData(fileData, experimentId);
+
         //Przetworzenie pliku na dane pomiarowe
-        ectService.addFramesFromFile(fileData);
+        ectService.addFramesFromFile(fileData, ectData);
 
-        //Nawiązanie relacji między eksperymentem, a dodanym plikiem oraz danymi pomiarowymi
-        if(experimentId != null) {
-
-            return ResultProducer.createResponseByReflection(fileData);
-        }
-
-        return ResultProducer.createResponseByReflection(fileData,
-                new Exception("Experiment doesn't exist but file upload successfully"));
+        return ectData;
     }
-
-//    @GetMapping("/filedata/{")
 
 }

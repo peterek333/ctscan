@@ -8,16 +8,17 @@ import pl.inz.ctscan.model.ect.Frame;
 import pl.inz.ctscan.model.ect.Measurement;
 import pl.inz.ctscan.model.ect.TestFrame;
 import pl.inz.ctscan.model.ect.TestFrameRow;
+import pl.inz.ctscan.model.file.ConverterMetadata;
 
 import java.io.File;
 import java.io.IOException;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.StringJoiner;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -217,24 +218,28 @@ public class FileManager {
         return filePath.substring(0, filePath.lastIndexOf('/') + OFFSET);
     }
 
-    public List<Frame> convertAimFileToFrames(String path) {
+    public Map<String, Object> convertAimFileToFrames(String path) {
 
         long startTime = System.nanoTime();
         Path file = Paths.get(path);
 
         List<Frame> frames = new ArrayList<>();
+        BigDecimal dataSum = new BigDecimal("0");
+        BigDecimal rowSum = null;
         try
         {
             Stream<String> lines = Files.lines( file, StandardCharsets.UTF_8 );
 
             Frame frame = null;
             StringJoiner csvValues = new StringJoiner(";");
+            StringJoiner csvAverages = new StringJoiner(";");
 
             for( String line : (Iterable<String>) lines::iterator )
             {
                 if(line.startsWith("## frame")) {
                     if(frame != null) {
                         frame.setData(csvValues.toString());
+                        frame.setRowAverage(csvAverages.toString());
                         frames.add(frame);
                     }
                     frame = new Frame();
@@ -242,23 +247,29 @@ public class FileManager {
                     setNumberAndMilliseconds(frame, line);
 
                     csvValues = new StringJoiner(";");
+                    csvAverages = new StringJoiner(";");
                 } else if(line.length() > 0 && !line.startsWith("##")) {
                     //wszystkie biale znaki
                     String[] splitted = line.split("\\s+");
+                    rowSum = new BigDecimal("0");
 
                     for( String data: splitted) {
                         float d = Float.parseFloat(data);
                         if(d > 0) {
                             csvValues.add("" + d);
+                            rowSum = rowSum.add(new BigDecimal("" + d));
                         } else {
                             csvValues.add("" + 0);
                         }
                     }
-
+                    rowSum = rowSum.divide(BigDecimal.valueOf(32));
+                    csvAverages.add(rowSum.toString());
+                    dataSum = dataSum.add(rowSum);
                 }
             }
             if(frame != null) {
                 frame.setData(csvValues.toString());
+                frame.setRowAverage(csvAverages.toString());
                 frames.add(frame);
             }
 
@@ -271,7 +282,14 @@ public class FileManager {
         logger.info("Prepared measurement from file path: " + path);
         logger.info("Total elapsed time: " + elapsedTimeInMillis + " ms");
 
-        return frames;
+        int PRECISION = 2;
+        String dataAverage = dataSum.divide(BigDecimal.valueOf(frames.size() * 32), PRECISION, RoundingMode.HALF_UP).toString();
+
+        Map<String, Object> metaData = new HashMap<>();
+        metaData.put(ConverterMetadata.FRAMES, frames);
+        metaData.put(ConverterMetadata.DATA_AVERAGE, dataAverage);
+
+        return metaData;
     }
 
     @Deprecated
