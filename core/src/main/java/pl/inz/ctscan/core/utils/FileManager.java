@@ -2,10 +2,8 @@ package pl.inz.ctscan.core.utils;
 
 import org.apache.log4j.Logger;
 import org.springframework.web.multipart.MultipartFile;
-import pl.inz.ctscan.db.ect.FrameRepository;
 import pl.inz.ctscan.db.ect.TestFrameRowRepository;
 import pl.inz.ctscan.model.ect.Frame;
-import pl.inz.ctscan.model.ect.Measurement;
 import pl.inz.ctscan.model.ect.TestFrame;
 import pl.inz.ctscan.model.ect.TestFrameRow;
 import pl.inz.ctscan.model.file.ConverterMetadata;
@@ -27,150 +25,27 @@ import java.util.stream.Stream;
 public class FileManager {
 
     private static final Logger logger = Logger.getLogger(FileManager.class);
-    /*
-    public Measurement convertAimFileToFrames(String path, FrameRepository frameRepository) {
 
-        long startTime = System.nanoTime();
-        Path file = Paths.get(path);
-        Measurement measurement = new Measurement();
-        List<Frame> frames = new ArrayList<>();
-        try
-        {
-            Stream<String> lines = Files.lines( file, StandardCharsets.UTF_8 );
-
-            Frame frame = null;
-
-            for( String line : (Iterable<String>) lines::iterator )
-            {
-                if(line.startsWith("## frame")) {
-                    if(frame != null) {
-                        //saveFrameAndAddToMeasurement(measurement, frame, frameRepository);
-                        frames.add(frame);
-                    }
-                    frame = new Frame();
-
-                    setNumberAndMilliseconds(frame, line);
-
-                    frame.setData(new ArrayList<>());
-                } else if(line.length() > 0 && !line.startsWith("##")) {
-                    //wszystkie biale znaki
-                    String[] splitted = line.split("\\s+");
-
-                    frame.getData().add(new ArrayList<>());
-
-                    for( String data: splitted) {
-                        float d = Float.parseFloat(data);
-                        if(d > 0) {
-                            frame.getData().get(frame.getData().size() - 1).add(d);
-                        } else {
-                            frame.getData().get(frame.getData().size() - 1).add(0F);
-                        }
-                    }
-
-                }
-            }
-            if(frame != null) {
-                //saveFrameAndAddToMeasurement(measurement, frame, frameRepository);
-                frames.add(frame);
-            }
-
-        } catch (IOException ioe){
-            ioe.printStackTrace();
+    private void setNumberAndMilliseconds(Frame frame, String line) {
+        Pattern p = Pattern.compile("\\d+");
+        Matcher m = p.matcher(line);
+        if (m.find()) {
+            frame.setNumber(Long.parseLong(m.group(0)));
         }
 
-        //frames = frameRepository.save(frames);
-
-        //measurement.setFramesId(frames.stream().map(ManualEntity::getId).collect(Collectors.toList()));
-
-        long endTime = System.nanoTime();
-        long elapsedTimeInMillis = TimeUnit.MILLISECONDS.convert((endTime - startTime), TimeUnit.NANOSECONDS);
-        logger.info("Prepared measurement from file path: " + path);
-        logger.info("Total elapsed time: " + elapsedTimeInMillis + " ms");
-
-        return measurement;
+        if (m.find()) {
+            frame.setMilliseconds(Long.parseLong(m.group(0)));
+        }
     }
-
-        public List<Frame> processAimFrames(String path) {
-            logger.info("Start prepare frames from file path: " + path);
-            long startTime = System.nanoTime();
-            Path file = Paths.get(path);
-            List<Frame> frames = new ArrayList<>();
-            try {
-                Stream<String> lines = Files.lines(file, StandardCharsets.UTF_8);
-
-                Frame frame = null;
-
-                for (String line : (Iterable<String>) lines::iterator) {
-                    if (line.startsWith("## frame")) {
-                        if (frame != null) {
-                            frames.add(frame);
-                        }
-                        frame = new Frame();
-
-                        setNumberAndMilliseconds(frame, line);
-
-                        frame.setData(new ArrayList<>());
-                    } else if (line.length() > 0 && !line.startsWith("##")) {
-                        //wszystkie biale znaki
-                        String[] splitted = line.split("\\s+");
-
-                        frame.getData().add(new ArrayList<>());
-
-                        for (String data : splitted) {
-                            float d = Float.parseFloat(data);
-                            if (d > 0) {
-                                frame.getData().get(frame.getData().size() - 1).add(d);
-                            } else {
-                                frame.getData().get(frame.getData().size() - 1).add(0F);
-                            }
-                        }
-
-                    }
-                }
-                if (frame != null) {
-                    frames.add(frame);
-                }
-
-            } catch (IOException ioe) {
-                ioe.printStackTrace();
-            }
-
-            //measurement.setFramesId(frames.stream().map(ManualEntity::getId).collect(Collectors.toList()));
-
-            long endTime = System.nanoTime();
-            long elapsedTimeInMillis = TimeUnit.MILLISECONDS.convert((endTime - startTime), TimeUnit.NANOSECONDS);
-            logger.info("Total elapsed time: " + elapsedTimeInMillis + " ms");
-
-            return frames;
-        }
-
-
-        private void saveFrameAndAddToMeasurement(Measurement measurement, Frame frame, FrameRepository frameRepository) {
-            frame = frameRepository.save(frame);
-
-            //measurement.getFramesId().add(frame.getId());
-        }
-    */
-        private void setNumberAndMilliseconds(Frame frame, String line) {
-            Pattern p = Pattern.compile("\\d+");
-            Matcher m = p.matcher(line);
-            if(m.find()) {
-                frame.setNumber(Long.parseLong(m.group(0)));
-            }
-
-            if(m.find()) {
-                frame.setMilliseconds(Long.parseLong(m.group(0)));
-            }
-        }
 
     private void setNumberAndMilliseconds(TestFrame frame, String line) {
         Pattern p = Pattern.compile("\\d+");
         Matcher m = p.matcher(line);
-        if(m.find()) {
+        if (m.find()) {
             frame.setNumber(Long.parseLong(m.group(0)));
         }
 
-        if(m.find()) {
+        if (m.find()) {
             frame.setMilliseconds(Long.parseLong(m.group(0)));
         }
     }
@@ -190,20 +65,15 @@ public class FileManager {
         return FileConstants.FILE_AIM_PATH + filename + type + suffix;
     }
 
-    public static String getFilenameFromFilePath(String filePath) {
-        int OFFSET = 1;
-        return filePath.substring(filePath.lastIndexOf('/') + OFFSET, filePath.length());
-    }
-
     public static void createNecessaryDirectories() {
         String[] necessaryDirectories = {
                 FileConstants.FILE_AIM_PATH
         };
 
-        for(String directoryPath: necessaryDirectories) {
+        for (String directoryPath : necessaryDirectories) {
             File dir = new File(directoryPath);
 
-            if(!dir.exists()) {
+            if (!dir.exists()) {
                 boolean result = dir.mkdir();
 
                 logger.info("Directory: " + directoryPath + " was created");
@@ -211,6 +81,11 @@ public class FileManager {
                 logger.info("Directory: " + directoryPath + " exists");
             }
         }
+    }
+
+    public static String getFilenameFromFilePath(String filePath) {
+        int OFFSET = 1;
+        return filePath.substring(filePath.lastIndexOf('/') + OFFSET, filePath.length());
     }
 
     public static String getDirPathFromFilePath(String filePath) {
@@ -226,18 +101,16 @@ public class FileManager {
         List<Frame> frames = new ArrayList<>();
         BigDecimal dataSum = new BigDecimal("0");
         BigDecimal rowSum = null;
-        try
-        {
-            Stream<String> lines = Files.lines( file, StandardCharsets.UTF_8 );
+        try {
+            Stream<String> lines = Files.lines(file, StandardCharsets.UTF_8);
 
             Frame frame = null;
             StringJoiner csvValues = new StringJoiner(";");
             StringJoiner csvAverages = new StringJoiner(";");
 
-            for( String line : (Iterable<String>) lines::iterator )
-            {
-                if(line.startsWith("## frame")) {
-                    if(frame != null) {
+            for (String line : (Iterable<String>) lines::iterator) {
+                if (line.startsWith("## frame")) {
+                    if (frame != null) {
                         frame.setData(csvValues.toString());
                         frame.setRowAverage(csvAverages.toString());
                         frames.add(frame);
@@ -248,14 +121,14 @@ public class FileManager {
 
                     csvValues = new StringJoiner(";");
                     csvAverages = new StringJoiner(";");
-                } else if(line.length() > 0 && !line.startsWith("##")) {
+                } else if (line.length() > 0 && !line.startsWith("##")) {
                     //wszystkie biale znaki
                     String[] splitted = line.split("\\s+");
                     rowSum = new BigDecimal("0");
 
-                    for( String data: splitted) {
+                    for (String data : splitted) {
                         float d = Float.parseFloat(data);
-                        if(d > 0) {
+                        if (d > 0) {
                             csvValues.add("" + d);
                             rowSum = rowSum.add(new BigDecimal("" + d));
                         } else {
@@ -267,13 +140,13 @@ public class FileManager {
                     dataSum = dataSum.add(rowSum);
                 }
             }
-            if(frame != null) {
+            if (frame != null) {
                 frame.setData(csvValues.toString());
                 frame.setRowAverage(csvAverages.toString());
                 frames.add(frame);
             }
 
-        } catch (IOException ioe){
+        } catch (IOException ioe) {
             ioe.printStackTrace();
         }
 
@@ -299,16 +172,14 @@ public class FileManager {
 
         List<TestFrame> frames = new ArrayList<>();
         List<TestFrameRow> frameRows = new ArrayList<>();
-        try
-        {
-            Stream<String> lines = Files.lines( file, StandardCharsets.UTF_8 );
+        try {
+            Stream<String> lines = Files.lines(file, StandardCharsets.UTF_8);
 
             TestFrame frame = null;
 
-            for( String line : (Iterable<String>) lines::iterator )
-            {
-                if(line.startsWith("## frame")) {
-                    if(frame != null) {
+            for (String line : (Iterable<String>) lines::iterator) {
+                if (line.startsWith("## frame")) {
+                    if (frame != null) {
                         frames.add(frame);
                     }
                     frame = new TestFrame();
@@ -316,15 +187,15 @@ public class FileManager {
                     setNumberAndMilliseconds(frame, line);
 
                     //frame.setRows(new ArrayList<>());
-                } else if(line.length() > 0 && !line.startsWith("##")) {
+                } else if (line.length() > 0 && !line.startsWith("##")) {
                     //wszystkie biale znaki
                     String[] splitted = line.split("\\s+");
 
                     TestFrameRow row = new TestFrameRow();
 
-                    for( String data: splitted) {
+                    for (String data : splitted) {
                         float d = Float.parseFloat(data);
-                        if(d > 0) {
+                        if (d > 0) {
                             row.getValues().add(d);
                         } else {
                             row.getValues().add(0F);
@@ -334,11 +205,11 @@ public class FileManager {
                     frameRows.add(row);
                 }
             }
-            if(frame != null) {
+            if (frame != null) {
                 frames.add(frame);
             }
 
-        } catch (IOException ioe){
+        } catch (IOException ioe) {
             ioe.printStackTrace();
         }
 

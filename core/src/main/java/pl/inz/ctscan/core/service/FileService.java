@@ -1,15 +1,5 @@
 package pl.inz.ctscan.core.service;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import pl.inz.ctscan.core.utils.FileManager;
-import pl.inz.ctscan.core.utils.ImageConverter;
-import pl.inz.ctscan.db.ect.MeasurementRepository;
-
-import javax.annotation.PostConstruct;
-import java.awt.*;
-import java.util.Random;
-
 //@Service
 public class FileService {
 /*

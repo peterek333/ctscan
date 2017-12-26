@@ -19,9 +19,6 @@ import java.util.Map;
 
 @Service
 public class ECTService {
-//
-//    private final MeasurementRepository measurementRepository;
-//
     private final FrameRepository frameRepository;
 
     private final TestFrameRepository testFrameRepository;
@@ -40,14 +37,6 @@ public class ECTService {
         this.testFrameRepository = testFrameRepository;
         this.ectDataRepository = ectDataRepository;
     }
-
-/*
-    public boolean experimentExist(Long experimentId) {
-        ECTExperiment ectExperiment = experimentRepository.findOne(experimentId);
-
-        return ectExperiment != null;
-    }
-*/
 
     public ECTData getECTData(Long ectDataId) {
         return ectDataRepository.findOne(ectDataId);
