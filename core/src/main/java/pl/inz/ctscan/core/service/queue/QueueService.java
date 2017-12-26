@@ -1,38 +1,31 @@
 package pl.inz.ctscan.core.service.queue;
 
-//@Service
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import pl.inz.ctscan.core.service.ECTService;
+import pl.inz.ctscan.core.utils.queue.ProcessFileExecutor;
+import pl.inz.ctscan.core.utils.queue.ProcessFileThread;
+import pl.inz.ctscan.model.ect.ECTData;
+
+@Service
 public class QueueService {
-/*
+
     private final ProcessFileExecutor processFileExecutor;
 
-    private final FileManager fileManager;
-
-    private final FrameRepository frameRepository;
-
-    private final MeasurementRepository measurementRepository;
-
-    private BlockingQueue<ProcessFileThread> processFileThreadsQueue;
+    private final ECTService ectService;
 
     @Autowired
-    public QueueService(ProcessFileExecutor processFileExecutor, MeasurementRepository measurementRepository, FileManager fileManager, FrameRepository frameRepository) {
+    public QueueService(ProcessFileExecutor processFileExecutor, ECTService ectService) {
         this.processFileExecutor = processFileExecutor;
-        this.measurementRepository = measurementRepository;
-        this.fileManager = fileManager;
-        this.frameRepository = frameRepository;
-
-        int MAX_THREADS = 2;
-        processFileThreadsQueue = new ArrayBlockingQueue<>(MAX_THREADS);
+        this.ectService = ectService;
     }
 
-    public void processAimFrames(Long measurementId, String path) throws InterruptedException {
-        ProcessFileThread processFileThread =
-                new ProcessFileThread(fileManager, frameRepository, measurementRepository, measurementId, path);
+    public void processAimFrames(Long ectDataId, String path) throws InterruptedException {
+        ECTData ectData = ectService.getECTData(ectDataId);
+
+        ProcessFileThread processFileThread = new ProcessFileThread(ectService, ectData, path);
 
         processFileExecutor.execute(processFileThread);
     }
 
-    public void processAimFramesByConsumer(String measurementId, String path) {
-
-    }
-*/
 }

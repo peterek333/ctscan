@@ -1,7 +1,6 @@
-package pl.inz.ctscan.core.utils.queue.pool;
+package pl.inz.ctscan.core.utils.queue;
 
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
-import pl.inz.ctscan.core.utils.queue.MemoryManager;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -12,13 +11,10 @@ import java.util.concurrent.ThreadFactory;
 public class ProcessFileExecutor {
 
     private ExecutorService executor;
-
     private long executorNumber;
-
-    private List<Runnable> tasks;
-
     private int MAX_THREADS;
 
+    private List<Runnable> tasks;
     private Thread recreateThread;
 
     public ProcessFileExecutor(int MAX_THREADS) {

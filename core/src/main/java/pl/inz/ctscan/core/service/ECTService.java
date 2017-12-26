@@ -42,17 +42,15 @@ public class ECTService {
         return ectDataRepository.findOne(ectDataId);
     }
 
-    public ECTData addFramesFromFile(FileData fileData, ECTData ectData) {
-        Map<String, Object> metadata = fileManager.convertAimFileToFrames(fileData.getFullPath());
+    public ECTData addFramesFromFile(String path, ECTData ectData) {
+        Map<String, Object> data = fileManager.convertAimFileToFrames(path);
 
-        frameRepository.save((List<Frame>) metadata.get(ConverterMetadata.FRAMES));
+        frameRepository.save((List<Frame>) data.get(ConverterMetadata.FRAMES));
 
-        String avg = (String) metadata.get(ConverterMetadata.DATA_AVERAGE);
+        String avg = (String) data.get(ConverterMetadata.DATA_AVERAGE);
 
         ectData.setDataAverage(avg);
         ectData.setStatus(DataStatus.FINISHED);
-
-        System.out.println("d");
 
         return ectDataRepository.save(ectData);
     }

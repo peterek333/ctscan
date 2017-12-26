@@ -27,7 +27,8 @@ public class UploadController {
 
     @PostMapping("/ect/aim")
     public ECTData uploadAimFile(@RequestParam("file") MultipartFile file,
-                                 @RequestParam(value = "id", required = false) Long experimentId) throws Exception {
+                                 @RequestParam(value = "id", required = false) Long experimentId,
+                                 @RequestParam(value = "process", required = false) boolean processNow) throws Exception {
         if (file.isEmpty()) {
             throw new Exception("File is empty");
         }
@@ -37,8 +38,10 @@ public class UploadController {
         //Relacja między plikiem do przetworzenia, a eksperymentu(o ile podano)
         ECTData ectData = ectService.createECTData(fileData, experimentId);
 
-        //Przetworzenie pliku na dane pomiarowe
-        ectService.addFramesFromFile(fileData, ectData);
+        if(processNow) {
+            //Przetworzenie pliku na dane pomiarowe
+            ectService.addFramesFromFile(fileData.getFullPath(), ectData);
+        }
 
         return ectData;
     }

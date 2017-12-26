@@ -14,13 +14,12 @@ public class TestController {
 
     private final TestService testService;
 
-    //private final QueueService queueService;
+    private final QueueService queueService;
 
     @Autowired
-    public TestController(TestService testService) {
-            //, QueueService queueService) {
+    public TestController(TestService testService, QueueService queueService) {
         this.testService = testService;
-        //this.queueService = queueService;
+        this.queueService = queueService;
     }
 
     @GetMapping("/{pathParam}")
@@ -41,17 +40,16 @@ public class TestController {
     }
 
     int start = 0;
-/*
-    @GetMapping("/executor")
+
+    @GetMapping("/queue")
     public boolean executeAim() throws InterruptedException {
-        Long measurementId = 1L;
+        Long ectDataId = 1L;
         String path = "/home/neo/_argo/tomografia/test/aim/test_76mb_full.aim" + start++;
 
-        queueService.processAimFrames(measurementId, path);
+        queueService.processAimFrames(ectDataId, path);
 
         System.out.println("Poszedl thread");
 
         return true;
     }
-    */
 }
