@@ -10,6 +10,7 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import pl.inz.ctscan.core.utils.FileManager;
 import pl.inz.ctscan.core.utils.ImageConverter;
 import pl.inz.ctscan.core.utils.queue.ProcessFileExecutor;
+import pl.inz.ctscan.core.utils.response.DbFormatConverter;
 import pl.inz.ctscan.model.validator.UserValidator;
 
 @Configuration
@@ -48,5 +49,10 @@ public class Beans {
     @Bean
     public ProcessFileExecutor processFileExecutor() {
         return new ProcessFileExecutor(MAX_THREADS);
+    }
+
+    @Bean
+    public DbFormatConverter dbFormatConverter() {
+        return new DbFormatConverter();
     }
 }

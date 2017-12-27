@@ -6,4 +6,9 @@ public class FileConstants {
 
     public static final String FILE_AIM_EXTENSION = ".aim";
 
+    public static final int AIM_FRAME_SIZE_ROW = 32;
+    public static final int AIM_FRAME_SIZE_COL = 32;
+
+    public static final String CSV_SEPARATOR = ";";
+
 }

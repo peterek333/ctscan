@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import pl.inz.ctscan.core.service.UserService;
-import pl.inz.ctscan.core.utils.ResultProducer;
+import pl.inz.ctscan.core.utils.response.ResultProducer;
 import pl.inz.ctscan.model.ApplicationUser;
 
 import java.util.Map;

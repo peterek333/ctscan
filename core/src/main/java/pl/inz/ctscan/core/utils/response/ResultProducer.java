@@ -1,4 +1,4 @@
-package pl.inz.ctscan.core.utils;
+package pl.inz.ctscan.core.utils.response;
 
 import java.util.Collections;
 import java.util.HashMap;

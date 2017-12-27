@@ -100,7 +100,7 @@ public class FileManager {
 
         List<Frame> frames = new ArrayList<>();
         BigDecimal dataSum = new BigDecimal("0");
-        BigDecimal rowSum = null;
+        BigDecimal rowSum;
         try {
             Stream<String> lines = Files.lines(file, StandardCharsets.UTF_8);
 
