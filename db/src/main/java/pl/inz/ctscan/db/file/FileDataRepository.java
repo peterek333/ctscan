@@ -8,5 +8,6 @@ import pl.inz.ctscan.model.file.FileType;
 public interface FileDataRepository extends CrudRepository<FileData, Long> {
 
     long countAllByFileTypeAndDirPath(FileType fileType, String dirPath);
+    FileData findByTempFilename(String tempFilename);
 
 }

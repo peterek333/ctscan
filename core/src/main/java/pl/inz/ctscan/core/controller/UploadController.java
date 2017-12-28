@@ -5,6 +5,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import pl.inz.ctscan.core.service.ECTService;
 import pl.inz.ctscan.core.service.UploadService;
+import pl.inz.ctscan.core.service.queue.QueueService;
 import pl.inz.ctscan.model.ect.ECTData;
 import pl.inz.ctscan.model.file.FileData;
 
@@ -12,16 +13,17 @@ import pl.inz.ctscan.model.file.FileData;
 @RequestMapping("/upload")
 public class UploadController {
 
-    final
-    UploadService uploadService;
+    final UploadService uploadService;
 
-    final
-    ECTService ectService;
+    final ECTService ectService;
+
+    final QueueService queueService;
 
     @Autowired
-    public UploadController(UploadService uploadService, ECTService ectService) {
+    public UploadController(UploadService uploadService, ECTService ectService, QueueService queueService) {
         this.uploadService = uploadService;
         this.ectService = ectService;
+        this.queueService = queueService;
     }
 
     @PostMapping("/ect/aim")
@@ -39,7 +41,7 @@ public class UploadController {
 
         if(processNow) {
             //Przetworzenie pliku na dane pomiarowe
-            ectService.addFramesFromFile(fileData.getFullPath(), ectData);
+            queueService.processAimFrames(ectData.getId(), fileData.getFullPath());
         }
 
         return ectData;

@@ -32,8 +32,7 @@ public class ECTService {
 
     private final ECTDataRepository ectDataRepository;
 
-    final
-    FileManager fileManager;
+    private final FileManager fileManager;
 
     private final DbFormatConverter dbFormatConverter;
 

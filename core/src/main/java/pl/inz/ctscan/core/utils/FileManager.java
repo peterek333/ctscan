@@ -60,6 +60,11 @@ public class FileManager {
         logger.info("File added. Path: " + filePath);
     }
 
+    public String concatFilePath(String originalFilename, String type) {
+        String filename = originalFilename.substring(0, originalFilename.indexOf('.'));
+        return FileConstants.FILE_AIM_PATH + filename + type;
+    }
+
     public String concatFilePath(String originalFilename, long suffix, String type) {
         String filename = originalFilename.substring(0, originalFilename.indexOf('.'));
         return FileConstants.FILE_AIM_PATH + filename + type + suffix;
