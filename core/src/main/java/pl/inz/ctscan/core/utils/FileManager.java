@@ -72,6 +72,7 @@ public class FileManager {
 
     public static void createNecessaryDirectories() {
         String[] necessaryDirectories = {
+                FileConstants.FILE_FOLDER,
                 FileConstants.FILE_AIM_PATH
         };
 
