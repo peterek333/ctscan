@@ -50,7 +50,8 @@ public class JWTAuthorizationFilter extends BasicAuthenticationFilter {
     }
 
     private UsernamePasswordAuthenticationToken getAuthentication(HttpServletRequest request) throws ServletException {
-        if(userService == null) {
+        boolean checkUserExist = false;
+        if(checkUserExist && userService == null) {
             injectUserService(request);
         }
 
@@ -64,11 +65,10 @@ public class JWTAuthorizationFilter extends BasicAuthenticationFilter {
                     .getSubject();
 
             if(user != null) {
-                if(userService.userExist(user)) {
-                    return new UsernamePasswordAuthenticationToken(user, null, new ArrayList<>());
-                } else {
+                if(checkUserExist && !userService.userExist(user)) {
                     throw new ServletException("User doesn't exist");
                 }
+                return new UsernamePasswordAuthenticationToken(user, null, new ArrayList<>());
             }
             return null;
         }

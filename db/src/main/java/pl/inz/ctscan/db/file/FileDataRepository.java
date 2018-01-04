@@ -9,5 +9,6 @@ public interface FileDataRepository extends CrudRepository<FileData, Long> {
 
     long countAllByFileTypeAndDirPath(FileType fileType, String dirPath);
     FileData findByTempFilename(String tempFilename);
+    FileData findByEctData_ExperimentId(Long expId);
 
 }

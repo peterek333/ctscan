@@ -3,6 +3,7 @@ package pl.inz.ctscan.core.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.util.Pair;
 import org.springframework.stereotype.Service;
 import pl.inz.ctscan.core.utils.FileManager;
 import pl.inz.ctscan.core.utils.db.DatabaseHelper;
@@ -21,8 +22,12 @@ import pl.inz.ctscan.model.file.DataStatus;
 import pl.inz.ctscan.model.file.FileData;
 import pl.inz.ctscan.model.response.PreparedPage;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
 @Service
 public class ECTService {
@@ -51,6 +56,26 @@ public class ECTService {
         return ectDataRepository.findOne(ectDataId);
     }
 
+    class Pair {
+        public Integer row;
+        public Integer col;
+
+        public Pair(Integer row, Integer col) {
+            this.row = row;
+            this.col = col;
+        }
+    }
+
+    class FloatIndex {
+        public Float f;
+        public Long id;
+
+        public FloatIndex(Float f, Long id) {
+            this.f = f;
+            this.id = id;
+        }
+    }
+
     public ECTData addFramesFromFile(String path, ECTData ectData) {
         changeEctDataStatus(ectData, DataStatus.PROCESSING);
 
@@ -58,10 +83,49 @@ public class ECTService {
 
         List<Frame> frames = (List<Frame>) data.get(ConverterMetadata.FRAMES);
         frames.parallelStream().forEach(f -> f.setEctDataId(ectData.getId()));
+        long startTime = System.nanoTime();
         frameRepository.save(frames);
+        System.out.println("time1s: " + TimeUnit.MILLISECONDS.convert((System.nanoTime() - startTime), TimeUnit.NANOSECONDS));
+        frames = frameRepository.getFramesByEctDataId(ectData.getId());
+        System.out.println("time2get: " + TimeUnit.MILLISECONDS.convert((System.nanoTime() - startTime), TimeUnit.NANOSECONDS));
+
+        List<Float> pframes = frames.parallelStream()
+                .map(dbFormatConverter::processFrameToPreparedFrame)
+                .map(pf -> pf.getData().get(3).get(2))
+                .collect(Collectors.toList());
+        System.out.println("time3: " + TimeUnit.MILLISECONDS.convert((System.nanoTime() - startTime), TimeUnit.NANOSECONDS));
+
+        List<Pair> pair = new ArrayList<>();
+        pair.add(new Pair(3, 2));
+        pair.add(new Pair(4, 1));
+        pair.add(new Pair(4, 2));
+        pair.add(new Pair(4, 3));
+        pair.add(new Pair(5, 2));
+
+
+        List<List<FloatIndex>> fl = frames.parallelStream()
+                .map(dbFormatConverter::processFrameToPreparedFrame)
+                .map(pf -> {
+                    List<FloatIndex> l = new ArrayList<>();
+                    for(int i = 0; i < pair.size(); i++ ) {
+                        l.add(new FloatIndex(pf.getData().get(pair.get(i).row).get(pair.get(i).col), pf.getId()));
+                    }
+                    return l;
+                })
+                .collect(Collectors.toList());
+        System.out.println("time4: " + TimeUnit.MILLISECONDS.convert((System.nanoTime() - startTime), TimeUnit.NANOSECONDS));
+
+        Long old = fl.get(0).get(0).id;
+        for(int i = 1; i < fl.size(); i++) {
+            if(old != (fl.get(i).get(0).id - 1)) {
+                System.out.println("nie rowne! " + old + " / " + fl.get(i).get(0).id);
+            }
+            old++;
+        }
+        System.out.println("time5: " + TimeUnit.MILLISECONDS.convert((System.nanoTime() - startTime), TimeUnit.NANOSECONDS));
+        System.out.println("f");
 
         String avg = (String) data.get(ConverterMetadata.DATA_AVERAGE);
-        ectData.setDataAverage(avg);
         ectData.setStatus(DataStatus.FINISHED);
 
         return ectDataRepository.save(ectData);
@@ -84,11 +148,12 @@ public class ECTService {
     }
 
     private ECTData prepareECTData(Long fileDataId, Long experimentId) {
-        return ECTData.builder()
-                .fileDataId(fileDataId)
-                .experimentId(experimentId)
-                .status(DataStatus.TODO)
-                .build();
+//        return ECTData.builder()
+//                .fileDataId(fileDataId)
+//                .experimentId(experimentId)
+//                .status(DataStatus.TODO)
+//                .build();
+        return null;
     }
 
     @Autowired

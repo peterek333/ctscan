@@ -23,7 +23,7 @@ public class DbFormatConverter {
         return preparedFrames;
     }
 
-    private PreparedFrame processFrameToPreparedFrame(Frame frame) {
+    public PreparedFrame processFrameToPreparedFrame(Frame frame) {
         List<List<Float>> data = new ArrayList<>();
         List<Float> rowAverage = new ArrayList<>();
 
