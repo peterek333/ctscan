@@ -12,12 +12,9 @@ public class ProcessFileThread implements Runnable {
 
     private ECTData ectData;
 
-    private String path;
-
-    public ProcessFileThread(ECTService ectService, ECTData ectData, String path) {
+    public ProcessFileThread(ECTService ectService, ECTData ectData) {
         this.ectService = ectService;
         this.ectData = ectData;
-        this.path = path;
     }
 
     @Override
@@ -25,7 +22,7 @@ public class ProcessFileThread implements Runnable {
         logger.info("Watek o id: " + Thread.currentThread().getId() + " rozpoczal przetwarzanie pliku");
 
         if(ectData != null) {
-            ectService.addFramesFromFile(path, ectData);
+            ectService.addFramesFromFile(ectData);
             logger.info("Zakończone przetwarzania w watku: " + Thread.currentThread().getId());
         }
     }

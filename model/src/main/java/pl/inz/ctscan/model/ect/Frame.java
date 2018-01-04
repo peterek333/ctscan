@@ -14,6 +14,5 @@ public class Frame extends FrameBase {
     @Column(length = 10000)
     private String data;
 
-    @Column(length = 450)
-    private String rowAverage;
+    private Float frameAverage;
 }

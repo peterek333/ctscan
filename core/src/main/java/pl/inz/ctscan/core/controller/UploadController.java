@@ -41,7 +41,7 @@ public class UploadController {
 
         if(processNow) {
             //Przetworzenie pliku na dane pomiarowe
-            queueService.processAimFrames(ectData.getId(), fileData.getFullPath());
+            queueService.processFrames(ectData.getId());
         }
 
         return ectData;

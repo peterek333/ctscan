@@ -3,10 +3,8 @@ package pl.inz.ctscan.core.utils;
 import org.apache.log4j.Logger;
 import org.springframework.web.multipart.MultipartFile;
 import pl.inz.ctscan.db.ect.TestFrameRowRepository;
-import pl.inz.ctscan.model.ect.Frame;
-import pl.inz.ctscan.model.ect.TestFrame;
-import pl.inz.ctscan.model.ect.TestFrameRow;
-import pl.inz.ctscan.model.file.ConverterMetadata;
+import pl.inz.ctscan.model.ect.*;
+import pl.inz.ctscan.model.file.FileType;
 
 import java.io.File;
 import java.io.IOException;
@@ -99,76 +97,106 @@ public class FileManager {
         return filePath.substring(0, filePath.lastIndexOf('/') + OFFSET);
     }
 
-    public Map<String, Object> convertAimFileToFrames(String path) {
-
+    public List<Frame> convertFileToFrames(ECTData ectData) {
         long startTime = System.nanoTime();
+
+        FileType fileType = ectData.getFileData().getFileType();
+        String path = ectData.getFileData().getFullPath();
         Path file = Paths.get(path);
 
         List<Frame> frames = new ArrayList<>();
-        BigDecimal dataSum = new BigDecimal("0");
-        BigDecimal rowSum;
+        BigDecimal frameSum = null;
         try {
             Stream<String> lines = Files.lines(file, StandardCharsets.UTF_8);
 
             Frame frame = null;
             StringJoiner csvValues = new StringJoiner(";");
-            StringJoiner csvAverages = new StringJoiner(";");
 
             for (String line : (Iterable<String>) lines::iterator) {
                 if (line.startsWith("## frame")) {
                     if (frame != null) {
-                        frame.setData(csvValues.toString());
-                        frame.setRowAverage(csvAverages.toString());
-                        frames.add(frame);
+                        addFrame(frames, frame, ectData, csvValues, frameSum);
                     }
                     frame = new Frame();
+                    frameSum = new BigDecimal("0");
 
                     setNumberAndMilliseconds(frame, line);
 
                     csvValues = new StringJoiner(";");
-                    csvAverages = new StringJoiner(";");
                 } else if (line.length() > 0 && !line.startsWith("##")) {
                     //wszystkie biale znaki
                     String[] splitted = line.split("\\s+");
-                    rowSum = new BigDecimal("0");
 
                     for (String data : splitted) {
                         float d = Float.parseFloat(data);
                         if (d > 0) {
                             csvValues.add("" + d);
-                            rowSum = rowSum.add(new BigDecimal("" + d));
+                            frameSum = frameSum.add(new BigDecimal("" + d));
                         } else {
                             csvValues.add("" + 0);
                         }
                     }
-                    rowSum = rowSum.divide(BigDecimal.valueOf(32));
-                    csvAverages.add(rowSum.toString());
-                    dataSum = dataSum.add(rowSum);
+                } else if (line.startsWith("## Electrodes")) {
+                    getMetadata(line, fileType, ectData);
+                } else if (line.startsWith("## Data")) {
+                    getPlaneNumber(line, ectData);
                 }
             }
             if (frame != null) {
-                frame.setData(csvValues.toString());
-                frame.setRowAverage(csvAverages.toString());
-                frames.add(frame);
+                addFrame(frames, frame, ectData, csvValues, frameSum);
             }
-
         } catch (IOException ioe) {
             ioe.printStackTrace();
         }
 
-        long endTime = System.nanoTime();
-        long elapsedTimeInMillis = TimeUnit.MILLISECONDS.convert((endTime - startTime), TimeUnit.NANOSECONDS);
         logger.info("Prepared measurement from file path: " + path);
-        logger.info("Total elapsed time: " + elapsedTimeInMillis + " ms");
+        logger.info("Total elapsed time: " + TimeUnit.MILLISECONDS.convert((System.nanoTime() - startTime), TimeUnit.NANOSECONDS) + " ms");
 
+        return frames;
+    }
+
+    private void addFrame(List<Frame> frames, Frame frame, ECTData ectData, StringJoiner csvValues, BigDecimal frameSum) {
+        frame.setEctDataId(ectData.getId());
+        frame.setData(csvValues.toString());
+
+        Float average;
+        if(ectData.getFileData().getFileType() == FileType.AIM) {
+            Integer pixels = ((ECTDataAIM) ectData).getPixels();
+            average = divideFrameSumBy(frameSum, pixels);
+        } else {
+            average = divideFrameSumBy(frameSum, ectData.getMeasurements());
+        }
+        frame.setFrameAverage(average);
+        frames.add(frame);
+    }
+
+    private Float divideFrameSumBy(BigDecimal frameSum, Integer divider) {
         int PRECISION = 2;
-        String dataAverage = dataSum.divide(BigDecimal.valueOf(frames.size() * 32), PRECISION, RoundingMode.HALF_UP).toString();
+        BigDecimal average = frameSum.divide(BigDecimal.valueOf(divider), PRECISION, RoundingMode.HALF_UP);
 
-        Map<String, Object> metaData = new HashMap<>();
-        metaData.put(ConverterMetadata.FRAMES, frames);
-        metaData.put(ConverterMetadata.DATA_AVERAGE, dataAverage);
+        return average.floatValue();
+    }
 
-        return metaData;
+    private void getPlaneNumber(String line, ECTData ectData) {
+        String plane = line.replaceAll("\\D+","");
+
+        ectData.setPlane(Integer.parseInt(plane));
+    }
+
+    private void getMetadata(String line, FileType fileType, ECTData ectData) {
+        Pattern p = Pattern.compile("\\d+");
+        Matcher m = p.matcher(line);
+        if (m.find()) {
+            ectData.setElectrodes(Integer.parseInt(m.group(0)));
+        }
+
+        if (m.find()) {
+            ectData.setMeasurements(Integer.parseInt(m.group(0)));
+        }
+
+        if(fileType == FileType.AIM && m.find()) {
+            ((ECTDataAIM) ectData).setPixels(Integer.parseInt(m.group(0)));
+        }
     }
 
     @Deprecated

@@ -9,13 +9,14 @@ import pl.inz.ctscan.db.file.FileDataRepository;
 import pl.inz.ctscan.model.QueryOptions;
 import pl.inz.ctscan.model.ect.*;
 import pl.inz.ctscan.model.file.DataStatus;
-import pl.inz.ctscan.model.file.FILEData;
 import pl.inz.ctscan.model.file.FileData;
 import pl.inz.ctscan.model.file.FileType;
 import pl.inz.ctscan.model.response.PreparedPage;
 
 import java.util.List;
 import java.util.concurrent.TimeUnit;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 @RestController
 @RequestMapping("/ect")
@@ -98,6 +99,39 @@ public class ECTController {
 
         System.out.println("zrobione");
 
+    }
+    @GetMapping("/tt3")
+    public void tt3() {
+
+        String s = "## Electrodes = 8, Measurements = 28";
+        String s2 = "## Data for Plane 1";
+
+        System.out.println("i: " + s.indexOf('='));
+        System.out.println("i2: " + s.substring(s.indexOf('='), s.length()));
+        String str = s.substring(s.indexOf('='), s.indexOf(','));
+        str = str.replaceAll("\\D+","");
+        System.out.println("i2: " + Integer.parseInt(str));
+        System.out.println("mam: " + s2.indexOf("Plane"));
+
+        int startIndex = s.indexOf('=');
+        int endIndex = s.indexOf(',');
+        String electrodes = s.substring(startIndex, endIndex);
+        startIndex = s.indexOf('=', endIndex);
+        endIndex = s.indexOf(',', startIndex);
+        endIndex = endIndex == -1 ? s.length() : endIndex;
+        String meas = s.substring(startIndex, endIndex);
+
+        Pattern p = Pattern.compile("\\d+");
+        Matcher m = p.matcher(s);
+        if (m.find()) {
+            System.out.println(Integer.parseInt(m.group(0)));
+        }
+
+        if (m.find()) {
+            System.out.println(Integer.parseInt(m.group(0)));
+        }
+
+        System.out.println("mam: " + s2.indexOf("Plane"));
     }
 
     @GetMapping("/tt2")

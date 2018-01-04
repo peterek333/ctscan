@@ -25,10 +25,8 @@ public class DbFormatConverter {
 
     public PreparedFrame processFrameToPreparedFrame(Frame frame) {
         List<List<Float>> data = new ArrayList<>();
-        List<Float> rowAverage = new ArrayList<>();
 
         String[] frameData = frame.getData().split(CSV_SEPARATOR);
-        String[] frameRowAverage = frame.getRowAverage().split(CSV_SEPARATOR);
 
         for(int i = 0; i < AIM_FRAME_SIZE_ROW; i++) {
             List<Float> rowData = new ArrayList<>();
@@ -40,20 +38,19 @@ public class DbFormatConverter {
             }
 
             data.add(rowData);
-            rowAverage.add(Float.parseFloat(frameRowAverage[i]));
         }
 
-        return createPreparedFrame(frame, data, rowAverage);
+        return createPreparedFrame(frame, data, frame.getFrameAverage());
     }
 
-    private PreparedFrame createPreparedFrame(Frame frame, List<List<Float>> data, List<Float> rowAverage) {
+    private PreparedFrame createPreparedFrame(Frame frame, List<List<Float>> data, Float frameAverage) {
         return PreparedFrame.builder()
                 .id(frame.getId())
                 .ectDataId(frame.getEctDataId())
                 .number(frame.getNumber())
                 .milliseconds(frame.getMilliseconds())
                 .data(data)
-                .rowAverage(rowAverage)
+                .frameAverage(frameAverage)
                 .build();
     }
 }

@@ -20,10 +20,10 @@ public class QueueService {
         this.ectService = ectService;
     }
 
-    public void processAimFrames(Long ectDataId, String path) throws InterruptedException {
+    public void processFrames(Long ectDataId) throws InterruptedException {
         ECTData ectData = ectService.getECTData(ectDataId);
 
-        ProcessFileThread processFileThread = new ProcessFileThread(ectService, ectData, path);
+        ProcessFileThread processFileThread = new ProcessFileThread(ectService, ectData);
 
         processFileExecutor.execute(processFileThread);
     }

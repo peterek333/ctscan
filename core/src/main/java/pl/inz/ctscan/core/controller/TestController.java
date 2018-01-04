@@ -46,7 +46,7 @@ public class TestController {
         Long ectDataId = 1L;
         String path = "/home/neo/_argo/tomografia/test/aim/test_76mb_full.aim" + start++;
 
-        queueService.processAimFrames(ectDataId, path);
+        queueService.processFrames(ectDataId);
 
         System.out.println("Poszedl thread");
 

@@ -3,7 +3,6 @@ package pl.inz.ctscan.core.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.util.Pair;
 import org.springframework.stereotype.Service;
 import pl.inz.ctscan.core.utils.FileManager;
 import pl.inz.ctscan.core.utils.db.DatabaseHelper;
@@ -13,19 +12,14 @@ import pl.inz.ctscan.db.ect.FrameRepository;
 import pl.inz.ctscan.db.ect.TestFrameRepository;
 import pl.inz.ctscan.db.ect.TestFrameRowRepository;
 import pl.inz.ctscan.model.QueryOptions;
-import pl.inz.ctscan.model.ect.ECTData;
-import pl.inz.ctscan.model.ect.Frame;
-import pl.inz.ctscan.model.ect.PreparedFrame;
-import pl.inz.ctscan.model.ect.TestFrame;
-import pl.inz.ctscan.model.file.ConverterMetadata;
+import pl.inz.ctscan.model.ect.*;
 import pl.inz.ctscan.model.file.DataStatus;
 import pl.inz.ctscan.model.file.FileData;
+import pl.inz.ctscan.model.file.FileType;
 import pl.inz.ctscan.model.response.PreparedPage;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
@@ -76,13 +70,11 @@ public class ECTService {
         }
     }
 
-    public ECTData addFramesFromFile(String path, ECTData ectData) {
+    public ECTData addFramesFromFile(ECTData ectData) {
         changeEctDataStatus(ectData, DataStatus.PROCESSING);
 
-        Map<String, Object> data = fileManager.convertAimFileToFrames(path);
+        List<Frame> frames = fileManager.convertFileToFrames(ectData);
 
-        List<Frame> frames = (List<Frame>) data.get(ConverterMetadata.FRAMES);
-        frames.parallelStream().forEach(f -> f.setEctDataId(ectData.getId()));
         long startTime = System.nanoTime();
         frameRepository.save(frames);
         System.out.println("time1s: " + TimeUnit.MILLISECONDS.convert((System.nanoTime() - startTime), TimeUnit.NANOSECONDS));
@@ -125,10 +117,7 @@ public class ECTService {
         System.out.println("time5: " + TimeUnit.MILLISECONDS.convert((System.nanoTime() - startTime), TimeUnit.NANOSECONDS));
         System.out.println("f");
 
-        String avg = (String) data.get(ConverterMetadata.DATA_AVERAGE);
-        ectData.setStatus(DataStatus.FINISHED);
-
-        return ectDataRepository.save(ectData);
+        return changeEctDataStatus(ectData, DataStatus.FINISHED);
     }
 
     public List<Frame> getFrames(Long ectDataId) {
@@ -141,19 +130,26 @@ public class ECTService {
         return frameRepository.getFramesByEctDataId(ectDataId, pageRequest);
     }
 
-    private void changeEctDataStatus(ECTData ectData, DataStatus processing) {
+    private ECTData changeEctDataStatus(ECTData ectData, DataStatus processing) {
         ectData.setStatus(processing);
 
-        ectDataRepository.save(ectData);
+        return ectDataRepository.save(ectData);
     }
 
-    private ECTData prepareECTData(Long fileDataId, Long experimentId) {
-//        return ECTData.builder()
-//                .fileDataId(fileDataId)
-//                .experimentId(experimentId)
-//                .status(DataStatus.TODO)
-//                .build();
-        return null;
+    private ECTData prepareECTData(FileData fileData, Long experimentId) {
+        ECTData ectData;
+
+        if(fileData.getFileType() == FileType.AIM) {
+            ectData = new ECTDataAIM();
+        } else {
+            ectData = new ECTDataANC();
+        }
+
+        ectData.setExperimentId(experimentId);
+        ectData.setFileData(fileData);
+        ectData.setStatus(DataStatus.TODO);
+
+        return ectData;
     }
 
     @Autowired
@@ -167,7 +163,7 @@ public class ECTService {
     }
 
     public ECTData createECTData(FileData fileData, Long experimentId) {
-        ECTData ectData = prepareECTData(fileData.getId(), experimentId);
+        ECTData ectData = prepareECTData(fileData, experimentId);
 
         return ectDataRepository.save(ectData);
     }
