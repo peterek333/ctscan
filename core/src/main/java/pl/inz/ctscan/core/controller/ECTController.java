@@ -34,7 +34,6 @@ public class ECTController {
         return ectService.getECTData(ectDataId);
     }
 
-    //Endpoint jest pamięciożerny ze względu na dużą ilość danych
     @GetMapping("/frames/{ectDataId}")
     public List<Frame> getFrames(@PathVariable Long ectDataId) {
         System.out.println("t");
@@ -52,8 +51,9 @@ public class ECTController {
     public PreparedPage<PreparedFrame> getFramesByPage(@PathVariable Long ectDataId,
                                                        @RequestBody QueryOptions queryOptions) {
         Page<Frame> frames = ectService.getFramesByPage(ectDataId, queryOptions);
+        ECTData ectData = ectService.getECTData(ectDataId);
 
-        return ectService.preparePageFromFrames(frames);
+        return ectService.preparePageFromFrames(frames, ectData);
     }
 
     @Autowired

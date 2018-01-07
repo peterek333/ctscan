@@ -30,20 +30,29 @@ public class UploadService {
         this.fileDataRepository = fileDataRepository;
     }
 
-    public FileData uploadFile(MultipartFile file) throws Exception {
-        FileType fileType = FileType.AIM;
+    public FileData uploadFile(MultipartFile file, FileType fileType) throws Exception {
         String suffix = "";
         String filePath;
+        String fileExtension;
+        String fileTypePath;
+
+        if(fileType == FileType.AIM) {
+            fileExtension = FileConstants.FILE_AIM_EXTENSION;
+            fileTypePath = FileConstants.FILE_AIM_PATH;
+        } else {
+            fileExtension = FileConstants.FILE_ANC_EXTENSION;
+            fileTypePath = FileConstants.FILE_AIM_PATH;
+        }
 
         if(enableUUID) {
             String filename = generateFilenameByUUID(fileType);
 
-            filePath = fileManager.concatFilePath(filename, FileConstants.FILE_AIM_EXTENSION);
+            filePath = fileManager.concatFilePath(filename, fileExtension);
         } else {
-            long numSuffix = fileDataRepository.countAllByFileTypeAndDirPath(fileType, FileConstants.FILE_AIM_PATH);
+            long numSuffix = fileDataRepository.countAllByFileTypeAndDirPath(fileType, fileTypePath);
             suffix += numSuffix;
 
-            filePath = fileManager.concatFilePath(file.getOriginalFilename(), numSuffix, FileConstants.FILE_AIM_EXTENSION);
+            filePath = fileManager.concatFilePath(file.getOriginalFilename(), numSuffix, fileExtension);
         }
         fileManager.saveAimFile(file, filePath);
 

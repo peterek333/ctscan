@@ -36,18 +36,6 @@ public class FileManager {
         }
     }
 
-    private void setNumberAndMilliseconds(TestFrame frame, String line) {
-        Pattern p = Pattern.compile("\\d+");
-        Matcher m = p.matcher(line);
-        if (m.find()) {
-            frame.setNumber(Long.parseLong(m.group(0)));
-        }
-
-        if (m.find()) {
-            frame.setMilliseconds(Long.parseLong(m.group(0)));
-        }
-    }
-
     public void saveAimFile(MultipartFile file, String filePath) throws IOException {
         byte[] bytes = file.getBytes();
 
@@ -171,7 +159,7 @@ public class FileManager {
     }
 
     private Float divideFrameSumBy(BigDecimal frameSum, Integer divider) {
-        int PRECISION = 2;
+        int PRECISION = 4;
         BigDecimal average = frameSum.divide(BigDecimal.valueOf(divider), PRECISION, RoundingMode.HALF_UP);
 
         return average.floatValue();
@@ -197,70 +185,5 @@ public class FileManager {
         if(fileType == FileType.AIM && m.find()) {
             ((ECTDataAIM) ectData).setPixels(Integer.parseInt(m.group(0)));
         }
-    }
-
-    @Deprecated
-    public List<TestFrame> convertAimFileToTestFrames(String path, TestFrameRowRepository testFrameRowRepository) {
-        long startTime = System.nanoTime();
-        Path file = Paths.get(path);
-
-        List<TestFrame> frames = new ArrayList<>();
-        List<TestFrameRow> frameRows = new ArrayList<>();
-        try {
-            Stream<String> lines = Files.lines(file, StandardCharsets.UTF_8);
-
-            TestFrame frame = null;
-
-            for (String line : (Iterable<String>) lines::iterator) {
-                if (line.startsWith("## frame")) {
-                    if (frame != null) {
-                        frames.add(frame);
-                    }
-                    frame = new TestFrame();
-
-                    setNumberAndMilliseconds(frame, line);
-
-                    //frame.setRows(new ArrayList<>());
-                } else if (line.length() > 0 && !line.startsWith("##")) {
-                    //wszystkie biale znaki
-                    String[] splitted = line.split("\\s+");
-
-                    TestFrameRow row = new TestFrameRow();
-
-                    for (String data : splitted) {
-                        float d = Float.parseFloat(data);
-                        if (d > 0) {
-                            row.getValues().add(d);
-                        } else {
-                            row.getValues().add(0F);
-                        }
-                    }
-                    //frame.getRows().add(row);
-                    frameRows.add(row);
-                }
-            }
-            if (frame != null) {
-                frames.add(frame);
-            }
-
-        } catch (IOException ioe) {
-            ioe.printStackTrace();
-        }
-
-        long endTime = System.nanoTime();
-        long elapsedTimeInMillis = TimeUnit.MILLISECONDS.convert((endTime - startTime), TimeUnit.NANOSECONDS);
-        logger.info("Prepared measurement from file path: " + path);
-        logger.info("Total elapsed time: " + elapsedTimeInMillis + " ms");
-
-        List<Float> f = frameRows.get(frameRows.size() - 1).getValues();
-        List<Float> f1 = frameRows.get(frameRows.size() - 2).getValues();
-        System.out.println("ost");
-
-        testFrameRowRepository.save(frameRows);
-
-        elapsedTimeInMillis = TimeUnit.MILLISECONDS.convert((endTime - startTime), TimeUnit.NANOSECONDS);
-        logger.info("Total elapsed time2: " + elapsedTimeInMillis + " ms");
-
-        return frames;
     }
 }

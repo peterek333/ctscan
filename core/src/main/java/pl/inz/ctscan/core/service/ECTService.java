@@ -81,9 +81,9 @@ public class ECTService {
         frames = frameRepository.getFramesByEctDataId(ectData.getId());
         System.out.println("time2get: " + TimeUnit.MILLISECONDS.convert((System.nanoTime() - startTime), TimeUnit.NANOSECONDS));
 
-        List<Float> pframes = frames.parallelStream()
-                .map(dbFormatConverter::processFrameToPreparedFrame)
-                .map(pf -> pf.getData().get(3).get(2))
+        List<PreparedFrame> pframes = frames.parallelStream()
+                .map(f -> dbFormatConverter.processFrameToPreparedFrame(f, ectData))
+                //.map(pf -> pf.getData().get(3).get(2))
                 .collect(Collectors.toList());
         System.out.println("time3: " + TimeUnit.MILLISECONDS.convert((System.nanoTime() - startTime), TimeUnit.NANOSECONDS));
 
@@ -94,26 +94,26 @@ public class ECTService {
         pair.add(new Pair(4, 3));
         pair.add(new Pair(5, 2));
 
-
-        List<List<FloatIndex>> fl = frames.parallelStream()
-                .map(dbFormatConverter::processFrameToPreparedFrame)
-                .map(pf -> {
-                    List<FloatIndex> l = new ArrayList<>();
-                    for(int i = 0; i < pair.size(); i++ ) {
-                        l.add(new FloatIndex(pf.getData().get(pair.get(i).row).get(pair.get(i).col), pf.getId()));
-                    }
-                    return l;
-                })
-                .collect(Collectors.toList());
-        System.out.println("time4: " + TimeUnit.MILLISECONDS.convert((System.nanoTime() - startTime), TimeUnit.NANOSECONDS));
-
-        Long old = fl.get(0).get(0).id;
-        for(int i = 1; i < fl.size(); i++) {
-            if(old != (fl.get(i).get(0).id - 1)) {
-                System.out.println("nie rowne! " + old + " / " + fl.get(i).get(0).id);
-            }
-            old++;
-        }
+//
+//        List<List<FloatIndex>> fl = frames.parallelStream()
+//                .map(f -> dbFormatConverter.processFrameToPreparedFrame(f, ectData))
+//                .map(pf -> {
+//                    List<FloatIndex> l = new ArrayList<>();
+//                    for(int i = 0; i < pair.size(); i++ ) {
+//                        l.add(new FloatIndex(pf.getData().get(pair.get(i).row).get(pair.get(i).col), pf.getId()));
+//                    }
+//                    return l;
+//                })
+//                .collect(Collectors.toList());
+//        System.out.println("time4: " + TimeUnit.MILLISECONDS.convert((System.nanoTime() - startTime), TimeUnit.NANOSECONDS));
+//
+//        Long old = fl.get(0).get(0).id;
+//        for(int i = 1; i < fl.size(); i++) {
+//            if(old != (fl.get(i).get(0).id - 1)) {
+//                System.out.println("nie rowne! " + old + " / " + fl.get(i).get(0).id);
+//            }
+//            old++;
+//        }
         System.out.println("time5: " + TimeUnit.MILLISECONDS.convert((System.nanoTime() - startTime), TimeUnit.NANOSECONDS));
         System.out.println("f");
 
@@ -168,10 +168,10 @@ public class ECTService {
         return ectDataRepository.save(ectData);
     }
 
-    public PreparedPage<PreparedFrame> preparePageFromFrames(Page<Frame> frames) {
+    public PreparedPage<PreparedFrame> preparePageFromFrames(Page<Frame> frames, ECTData ectData) {
         PreparedPage<PreparedFrame> preparedPageFromFrames = createPreparedPage(frames);
 
-        List<PreparedFrame> preparedFrames = dbFormatConverter.getPreparedFrames(frames.getContent());
+        List<PreparedFrame> preparedFrames = dbFormatConverter.getPreparedFrames(frames.getContent(), ectData);
 
         preparedPageFromFrames.setContent(preparedFrames);
 
