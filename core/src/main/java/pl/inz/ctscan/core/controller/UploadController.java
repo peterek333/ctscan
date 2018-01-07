@@ -6,6 +6,8 @@ import org.springframework.web.multipart.MultipartFile;
 import pl.inz.ctscan.core.service.ECTService;
 import pl.inz.ctscan.core.service.UploadService;
 import pl.inz.ctscan.core.service.queue.QueueService;
+import pl.inz.ctscan.db.ect.ECTDataRepository;
+import pl.inz.ctscan.db.file.FileDataRepository;
 import pl.inz.ctscan.model.ect.ECTData;
 import pl.inz.ctscan.model.file.FileData;
 import pl.inz.ctscan.model.file.FileType;

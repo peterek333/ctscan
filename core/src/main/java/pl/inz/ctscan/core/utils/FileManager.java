@@ -5,6 +5,7 @@ import org.springframework.web.multipart.MultipartFile;
 import pl.inz.ctscan.model.ect.ECTData;
 import pl.inz.ctscan.model.ect.ECTDataAIM;
 import pl.inz.ctscan.model.ect.Frame;
+import pl.inz.ctscan.model.file.FileData;
 import pl.inz.ctscan.model.file.FileType;
 
 import java.io.File;
@@ -39,7 +40,7 @@ public class FileManager {
         }
     }
 
-    public void saveAimFile(MultipartFile file, String filePath) throws IOException {
+    public void saveFile(MultipartFile file, String filePath) throws IOException {
         byte[] bytes = file.getBytes();
 
         Path path = Paths.get(filePath);
@@ -62,7 +63,8 @@ public class FileManager {
     public static void createNecessaryDirectories() {
         String[] necessaryDirectories = {
                 FileConstants.FILE_FOLDER,
-                FileConstants.FILE_AIM_PATH
+                FileConstants.FILE_AIM_PATH,
+                FileConstants.FILE_ANC_PATH
         };
 
         for (String directoryPath : necessaryDirectories) {
@@ -88,11 +90,11 @@ public class FileManager {
         return filePath.substring(0, filePath.lastIndexOf('/') + OFFSET);
     }
 
-    public List<Frame> convertFileToFrames(ECTData ectData) {
+    public List<Frame> convertFileToFrames(ECTData ectData, FileData fileData) {
         long startTime = System.nanoTime();
 
-        FileType fileType = ectData.getFileData().getFileType();
-        String path = ectData.getFileData().getFullPath();
+        FileType fileType = fileData.getFileType();
+        String path = fileData.getFullPath();
         Path file = Paths.get(path);
 
         List<Frame> frames = new ArrayList<>();
@@ -106,7 +108,7 @@ public class FileManager {
             for (String line : (Iterable<String>) lines::iterator) {
                 if (line.startsWith("## frame")) {
                     if (frame != null) {
-                        addFrame(frames, frame, ectData, csvValues, frameSum);
+                        addFrame(frames, frame, ectData, fileType, csvValues, frameSum);
                     }
                     frame = new Frame();
                     frameSum = new BigDecimal("0");
@@ -134,7 +136,7 @@ public class FileManager {
                 }
             }
             if (frame != null) {
-                addFrame(frames, frame, ectData, csvValues, frameSum);
+                addFrame(frames, frame, ectData, fileType, csvValues, frameSum);
             }
         } catch (IOException ioe) {
             ioe.printStackTrace();
@@ -146,12 +148,12 @@ public class FileManager {
         return frames;
     }
 
-    private void addFrame(List<Frame> frames, Frame frame, ECTData ectData, StringJoiner csvValues, BigDecimal frameSum) {
+    private void addFrame(List<Frame> frames, Frame frame, ECTData ectData, FileType fileType, StringJoiner csvValues, BigDecimal frameSum) {
         frame.setEctDataId(ectData.getId());
         frame.setData(csvValues.toString());
 
         Float average;
-        if(ectData.getFileData().getFileType() == FileType.AIM) {
+        if(fileType == FileType.AIM) {
             Integer pixels = ((ECTDataAIM) ectData).getPixels();
             average = divideFrameSumBy(frameSum, pixels);
         } else {

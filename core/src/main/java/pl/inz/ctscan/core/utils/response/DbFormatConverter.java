@@ -15,24 +15,24 @@ import static pl.inz.ctscan.core.utils.FileConstants.CSV_SEPARATOR;
 
 public class DbFormatConverter {
 
-    public List<PreparedFrame> getPreparedFrames(List<Frame> frames, ECTData ectData) {
+    public List<PreparedFrame> getPreparedFrames(List<Frame> frames, ECTData ectData, FileType fileType) {
         return frames.parallelStream()
-                .map(f -> processFrameToPreparedFrame(f, ectData))
+                .map(f -> processFrameToPreparedFrame(f, ectData, fileType))
                 .collect(Collectors.toList());
     }
 
-    public PreparedFrame processFrameToPreparedFrame(Frame frame, ECTData ectData) {
+    public PreparedFrame processFrameToPreparedFrame(Frame frame, ECTData ectData, FileType fileType) {
         List<List<Float>> data = new ArrayList<>();
 
         String[] frameData = frame.getData().split(CSV_SEPARATOR);
 
-        preprocessData(data, frameData, ectData);
+        preprocessData(data, frameData, ectData, fileType);
 
         return createPreparedFrame(frame, data, frame.getFrameAverage());
     }
 
-    private void preprocessData(List<List<Float>> data, String[] frameData, ECTData ectData) {
-        if(ectData.getFileData().getFileType() == FileType.AIM) {
+    private void preprocessData(List<List<Float>> data, String[] frameData, ECTData ectData, FileType fileType) {
+        if(fileType == FileType.AIM) {
             for(int i = 0; i < AIM_FRAME_SIZE_ROW; i++) {
                 List<Float> rowData = new ArrayList<>();
 

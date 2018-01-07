@@ -9,6 +9,7 @@ import pl.inz.ctscan.core.utils.db.DatabaseHelper;
 import pl.inz.ctscan.core.utils.response.DbFormatConverter;
 import pl.inz.ctscan.db.ect.ECTDataRepository;
 import pl.inz.ctscan.db.ect.FrameRepository;
+import pl.inz.ctscan.db.file.FileDataRepository;
 import pl.inz.ctscan.model.QueryOptions;
 import pl.inz.ctscan.model.ect.*;
 import pl.inz.ctscan.model.ect.utils.Pixel;
@@ -34,14 +35,17 @@ public class ECTService {
 
     private final DbFormatConverter dbFormatConverter;
 
+    private final FileDataRepository fileDataRepository;
+
     @Autowired
     public ECTService(
             FileManager fileManager,
-            FrameRepository frameRepository, ECTDataRepository ectDataRepository, DbFormatConverter dbFormatConverter) {
+            FrameRepository frameRepository, ECTDataRepository ectDataRepository, DbFormatConverter dbFormatConverter, FileDataRepository fileDataRepository) {
         this.fileManager = fileManager;
         this.frameRepository = frameRepository;
         this.ectDataRepository = ectDataRepository;
         this.dbFormatConverter = dbFormatConverter;
+        this.fileDataRepository = fileDataRepository;
     }
 
     public ECTData getECTData(Long ectDataId) {
@@ -55,13 +59,18 @@ public class ECTService {
     }
 
     public List<ProcessedECTFrame> getAimGraph(Long ectDataId, Pixel pixel) {
+        return prepareGraphValues(ectDataId, pixel);
+    }
+
+    private List<ProcessedECTFrame> prepareGraphValues(Long ectDataId, Pixel pixel) {
         ECTData ectData = getECTData(ectDataId);
         List<Frame> frames = getFrames(ectDataId);
+        FileData fileData = fileDataRepository.findOne(ectData.getFileDataId());
 
         List<ProcessedECTFrame> graphValues = frames.parallelStream()
-                .map(f -> dbFormatConverter.processFrameToPreparedFrame(f, ectData))
+                .map(f -> dbFormatConverter.processFrameToPreparedFrame(f, ectData, fileData.getFileType()))
                 .map(pf -> new ProcessedECTFrame(pf.getMilliseconds(),
-                                pf.getData().get(pixel.getRow()).get(pixel.getCol())))
+                        pf.getData().get(pixel.getRow()).get(pixel.getCol())))
                 .collect(Collectors.toList());
 
         return graphValues;
@@ -70,9 +79,10 @@ public class ECTService {
     public List<ProcessedECTFrame> getAimTopogram(Long ectDataId, List<Pixel> pixels) {
         ECTData ectData = getECTData(ectDataId);
         List<Frame> frames = getFrames(ectDataId);
+        FileData fileData = fileDataRepository.findOne(ectData.getFileDataId());
 
         List<ProcessedECTFrame> topogramValues = frames.parallelStream()
-                .map(f -> dbFormatConverter.processFrameToPreparedFrame(f, ectData))
+                .map(f -> dbFormatConverter.processFrameToPreparedFrame(f, ectData, fileData.getFileType()))
                 .map(pf -> {
                     List<TopogramECTValue> valuesPerTime = new ArrayList<>();
                     for(int i = 0; i < pixels.size(); i++ ) {
@@ -88,23 +98,20 @@ public class ECTService {
     }
 
     public List<ProcessedECTFrame> getAimAverage(Long ectDataId) {
-        ECTData ectData = getECTData(ectDataId);
-        List<Frame> frames = getFrames(ectDataId);
-
-        List<ProcessedECTFrame> averageValues = frames.parallelStream()
-                .map(f -> dbFormatConverter.processFrameToPreparedFrame(f, ectData))
-                .map(pf -> new ProcessedECTFrame(pf.getMilliseconds(), pf.getFrameAverage()))
-                .collect(Collectors.toList());
-
-        return averageValues;
+        return prepareAverage(ectDataId);
     }
 
     public List<ProcessedECTFrame> getAncAverage(Long ectDataId) {
+        return prepareAverage(ectDataId);
+    }
+
+    private List<ProcessedECTFrame> prepareAverage(Long ectDataId) {
         ECTData ectData = getECTData(ectDataId);
         List<Frame> frames = getFrames(ectDataId);
+        FileData fileData = fileDataRepository.findOne(ectData.getFileDataId());
 
         List<ProcessedECTFrame> averageValues = frames.parallelStream()
-                .map(f -> dbFormatConverter.processFrameToPreparedFrame(f, ectData))
+                .map(f -> dbFormatConverter.processFrameToPreparedFrame(f, ectData, fileData.getFileType()))
                 .map(pf -> new ProcessedECTFrame(pf.getMilliseconds(), pf.getFrameAverage()))
                 .collect(Collectors.toList());
 
@@ -112,86 +119,17 @@ public class ECTService {
     }
 
     public List<ProcessedECTFrame> getAncGraph(Long ectDataId, Pixel pixel) {
-        ECTData ectData = getECTData(ectDataId);
-        List<Frame> frames = getFrames(ectDataId);
-
-        List<ProcessedECTFrame> graphValues = frames.parallelStream()
-                .map(f -> dbFormatConverter.processFrameToPreparedFrame(f, ectData))
-                .map(pf -> new ProcessedECTFrame(pf.getMilliseconds(),
-                        pf.getData().get(pixel.getRow()).get(pixel.getCol())))
-                .collect(Collectors.toList());
-
-        return graphValues;
-    }
-
-    class Pair {
-        public Integer row;
-        public Integer col;
-
-        public Pair(Integer row, Integer col) {
-            this.row = row;
-            this.col = col;
-        }
-    }
-
-    class FloatIndex {
-        public Float f;
-        public Long id;
-
-        public FloatIndex(Float f, Long id) {
-            this.f = f;
-            this.id = id;
-        }
+        return prepareGraphValues(ectDataId, pixel);
     }
 
     public ECTData addFramesFromFile(ECTData ectData) {
         changeEctDataStatus(ectData, DataStatus.PROCESSING);
 
-        List<Frame> frames = fileManager.convertFileToFrames(ectData);
+        FileData fileData = fileDataRepository.findOne(ectData.getFileDataId());
+
+        List<Frame> frames = fileManager.convertFileToFrames(ectData, fileData);
 
         frameRepository.save(frames);
-
-        long startTime = System.nanoTime();
-        frameRepository.save(frames);
-        System.out.println("time1s: " + TimeUnit.MILLISECONDS.convert((System.nanoTime() - startTime), TimeUnit.NANOSECONDS));
-        frames = frameRepository.getFramesByEctDataId(ectData.getId());
-        System.out.println("time2get: " + TimeUnit.MILLISECONDS.convert((System.nanoTime() - startTime), TimeUnit.NANOSECONDS));
-
-        List<PreparedFrame> pframes = frames.parallelStream()
-                .map(f -> dbFormatConverter.processFrameToPreparedFrame(f, ectData))
-                //.map(pf -> pf.getData().get(3).get(2))
-                .collect(Collectors.toList());
-        System.out.println("time3: " + TimeUnit.MILLISECONDS.convert((System.nanoTime() - startTime), TimeUnit.NANOSECONDS));
-
-        List<Pair> pair = new ArrayList<>();
-        pair.add(new Pair(3, 2));
-        pair.add(new Pair(4, 1));
-        pair.add(new Pair(4, 2));
-        pair.add(new Pair(4, 3));
-        pair.add(new Pair(5, 2));
-
-//
-//        List<List<FloatIndex>> fl = frames.parallelStream()
-//                .map(f -> dbFormatConverter.processFrameToPreparedFrame(f, ectData))
-//                .map(pf -> {
-//                    List<FloatIndex> l = new ArrayList<>();
-//                    for(int i = 0; i < pair.size(); i++ ) {
-//                        l.add(new FloatIndex(pf.getData().get(pair.get(i).row).get(pair.get(i).col), pf.getId()));
-//                    }
-//                    return l;
-//                })
-//                .collect(Collectors.toList());
-//        System.out.println("time4: " + TimeUnit.MILLISECONDS.convert((System.nanoTime() - startTime), TimeUnit.NANOSECONDS));
-//
-//        Long old = fl.get(0).get(0).id;
-//        for(int i = 1; i < fl.size(); i++) {
-//            if(old != (fl.get(i).get(0).id - 1)) {
-//                System.out.println("nie rowne! " + old + " / " + fl.get(i).get(0).id);
-//            }
-//            old++;
-//        }
-        System.out.println("time5: " + TimeUnit.MILLISECONDS.convert((System.nanoTime() - startTime), TimeUnit.NANOSECONDS));
-        System.out.println("f");
 
         return changeEctDataStatus(ectData, DataStatus.FINISHED);
     }
@@ -222,7 +160,7 @@ public class ECTService {
         }
 
         ectData.setExperimentId(experimentId);
-        ectData.setFileData(fileData);
+        ectData.setFileDataId(fileData.getId());
         ectData.setStatus(DataStatus.TODO);
 
         return ectData;
@@ -245,7 +183,9 @@ public class ECTService {
     }
 
     public List<PreparedFrame> preparedFramesFromFrames(List<Frame> frames, ECTData ectData) {
-        return dbFormatConverter.getPreparedFrames(frames, ectData);
+        FileData fileData = fileDataRepository.findOne(ectData.getFileDataId());
+
+        return dbFormatConverter.getPreparedFrames(frames, ectData, fileData.getFileType());
     }
 
     private PreparedPage<PreparedFrame> createPreparedPage(Page<Frame> frames) {

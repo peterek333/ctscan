@@ -10,7 +10,6 @@ import pl.inz.ctscan.db.file.FileDataRepository;
 import pl.inz.ctscan.model.file.FileData;
 import pl.inz.ctscan.model.file.FileType;
 
-import java.io.IOException;
 import java.util.UUID;
 
 @Service
@@ -41,7 +40,7 @@ public class UploadService {
             fileTypePath = FileConstants.FILE_AIM_PATH;
         } else {
             fileExtension = FileConstants.FILE_ANC_EXTENSION;
-            fileTypePath = FileConstants.FILE_AIM_PATH;
+            fileTypePath = FileConstants.FILE_ANC_PATH;
         }
 
         if(enableUUID) {
@@ -54,7 +53,7 @@ public class UploadService {
 
             filePath = fileManager.concatFilePath(file.getOriginalFilename(), numSuffix, fileExtension);
         }
-        fileManager.saveAimFile(file, filePath);
+        fileManager.saveFile(file, filePath);
 
         FileData fileData = prepareFileData(file, filePath, fileType, suffix);
 
