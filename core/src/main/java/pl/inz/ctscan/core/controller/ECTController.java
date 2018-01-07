@@ -8,13 +8,14 @@ import pl.inz.ctscan.db.ect.ECTDataRepository;
 import pl.inz.ctscan.db.file.FileDataRepository;
 import pl.inz.ctscan.model.QueryOptions;
 import pl.inz.ctscan.model.ect.*;
+import pl.inz.ctscan.model.ect.utils.Pixel;
 import pl.inz.ctscan.model.file.DataStatus;
 import pl.inz.ctscan.model.file.FileData;
 import pl.inz.ctscan.model.file.FileType;
+import pl.inz.ctscan.model.response.ProcessedECTFrame;
 import pl.inz.ctscan.model.response.PreparedPage;
 
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -29,22 +30,24 @@ public class ECTController {
         this.ectService = ectService;
     }
 
+    @PostMapping("/data/user/{username}")
+    public Page<ECTData> getECTData(@PathVariable String username,
+                                    @RequestBody QueryOptions queryOptions) {
+        return ectService.getECTDataByUsername(username, queryOptions);
+    }
+
     @GetMapping("/data/{ectDataId}")
     public ECTData getECTData(@PathVariable Long ectDataId) {
         return ectService.getECTData(ectDataId);
     }
 
     @GetMapping("/frames/{ectDataId}")
-    public List<Frame> getFrames(@PathVariable Long ectDataId) {
-        System.out.println("t");
-        long startTime = System.nanoTime();
+    public List<PreparedFrame> getFrames(@PathVariable Long ectDataId) {
+
         List<Frame> frames = ectService.getFrames(ectDataId);
+        ECTData ectData = ectService.getECTData(ectDataId);
 
-        long endTime = System.nanoTime();
-        long elapsedTimeInMillis = TimeUnit.MILLISECONDS.convert((endTime - startTime), TimeUnit.NANOSECONDS);
-        System.out.println("t: " + elapsedTimeInMillis);
-
-        return frames;
+        return ectService.preparedFramesFromFrames(frames, ectData);
     }
 
     @PostMapping("/frames/{ectDataId}")
@@ -54,6 +57,34 @@ public class ECTController {
         ECTData ectData = ectService.getECTData(ectDataId);
 
         return ectService.preparePageFromFrames(frames, ectData);
+    }
+
+    @PostMapping("/aim/graph/{ectDataId}")
+    public List<ProcessedECTFrame> getAimGraph(@PathVariable Long ectDataId,
+                                               @RequestBody Pixel pixel) {
+        return ectService.getAimGraph(ectDataId, pixel);
+    }
+
+    @PostMapping("/aim/topogram/{ectDataId}")
+    public List<ProcessedECTFrame> getAimTopogram(@PathVariable Long ectDataId,
+                                                  @RequestBody List<Pixel> pixels) {
+        return ectService.getAimTopogram(ectDataId, pixels);
+    }
+
+    @PostMapping("/aim/graph/avg/{ectDataId}")
+    public List<ProcessedECTFrame> getAimAverage(@PathVariable Long ectDataId) {
+        return ectService.getAimAverage(ectDataId);
+    }
+
+    @PostMapping("/anc/graph/avg/{ectDataId}")
+    public List<ProcessedECTFrame> getAncAverage(@PathVariable Long ectDataId) {
+        return ectService.getAncAverage(ectDataId);
+    }
+
+    @PostMapping("/anc/graph/{ectDataId}")
+    public List<ProcessedECTFrame> getAncGraph(@PathVariable Long ectDataId,
+                                               @RequestBody Pixel pixel) {
+        return ectService.getAncGraph(ectDataId, pixel);
     }
 
     @Autowired

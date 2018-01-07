@@ -7,6 +7,7 @@ import pl.inz.ctscan.model.file.FileType;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static pl.inz.ctscan.core.utils.FileConstants.AIM_FRAME_SIZE_COL;
 import static pl.inz.ctscan.core.utils.FileConstants.AIM_FRAME_SIZE_ROW;
@@ -15,14 +16,9 @@ import static pl.inz.ctscan.core.utils.FileConstants.CSV_SEPARATOR;
 public class DbFormatConverter {
 
     public List<PreparedFrame> getPreparedFrames(List<Frame> frames, ECTData ectData) {
-        List<PreparedFrame> preparedFrames = new ArrayList<>();
-        for(Frame frame: frames) {
-            PreparedFrame preparedFrame = processFrameToPreparedFrame(frame, ectData);
-
-            preparedFrames.add(preparedFrame);
-        }
-
-        return preparedFrames;
+        return frames.parallelStream()
+                .map(f -> processFrameToPreparedFrame(f, ectData))
+                .collect(Collectors.toList());
     }
 
     public PreparedFrame processFrameToPreparedFrame(Frame frame, ECTData ectData) {

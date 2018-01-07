@@ -2,8 +2,9 @@ package pl.inz.ctscan.core.utils;
 
 import org.apache.log4j.Logger;
 import org.springframework.web.multipart.MultipartFile;
-import pl.inz.ctscan.db.ect.TestFrameRowRepository;
-import pl.inz.ctscan.model.ect.*;
+import pl.inz.ctscan.model.ect.ECTData;
+import pl.inz.ctscan.model.ect.ECTDataAIM;
+import pl.inz.ctscan.model.ect.Frame;
 import pl.inz.ctscan.model.file.FileType;
 
 import java.io.File;
@@ -14,7 +15,9 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.StringJoiner;
 import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;

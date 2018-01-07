@@ -9,13 +9,14 @@ import pl.inz.ctscan.core.utils.db.DatabaseHelper;
 import pl.inz.ctscan.core.utils.response.DbFormatConverter;
 import pl.inz.ctscan.db.ect.ECTDataRepository;
 import pl.inz.ctscan.db.ect.FrameRepository;
-import pl.inz.ctscan.db.ect.TestFrameRepository;
-import pl.inz.ctscan.db.ect.TestFrameRowRepository;
 import pl.inz.ctscan.model.QueryOptions;
 import pl.inz.ctscan.model.ect.*;
+import pl.inz.ctscan.model.ect.utils.Pixel;
 import pl.inz.ctscan.model.file.DataStatus;
 import pl.inz.ctscan.model.file.FileData;
 import pl.inz.ctscan.model.file.FileType;
+import pl.inz.ctscan.model.response.ProcessedECTFrame;
+import pl.inz.ctscan.model.response.TopogramECTValue;
 import pl.inz.ctscan.model.response.PreparedPage;
 
 import java.util.ArrayList;
@@ -27,8 +28,6 @@ import java.util.stream.Collectors;
 public class ECTService {
     private final FrameRepository frameRepository;
 
-    private final TestFrameRepository testFrameRepository;
-
     private final ECTDataRepository ectDataRepository;
 
     private final FileManager fileManager;
@@ -38,16 +37,91 @@ public class ECTService {
     @Autowired
     public ECTService(
             FileManager fileManager,
-            FrameRepository frameRepository, TestFrameRepository testFrameRepository, ECTDataRepository ectDataRepository, DbFormatConverter dbFormatConverter) {
+            FrameRepository frameRepository, ECTDataRepository ectDataRepository, DbFormatConverter dbFormatConverter) {
         this.fileManager = fileManager;
         this.frameRepository = frameRepository;
-        this.testFrameRepository = testFrameRepository;
         this.ectDataRepository = ectDataRepository;
         this.dbFormatConverter = dbFormatConverter;
     }
 
     public ECTData getECTData(Long ectDataId) {
         return ectDataRepository.findOne(ectDataId);
+    }
+
+    public Page<ECTData> getECTDataByUsername(String username, QueryOptions queryOptions) {
+        PageRequest pageRequest = DatabaseHelper.preparePageRequest(queryOptions);
+
+        return ectDataRepository.findByCreatedBy(username, pageRequest);
+    }
+
+    public List<ProcessedECTFrame> getAimGraph(Long ectDataId, Pixel pixel) {
+        ECTData ectData = getECTData(ectDataId);
+        List<Frame> frames = getFrames(ectDataId);
+
+        List<ProcessedECTFrame> graphValues = frames.parallelStream()
+                .map(f -> dbFormatConverter.processFrameToPreparedFrame(f, ectData))
+                .map(pf -> new ProcessedECTFrame(pf.getMilliseconds(),
+                                pf.getData().get(pixel.getRow()).get(pixel.getCol())))
+                .collect(Collectors.toList());
+
+        return graphValues;
+    }
+
+    public List<ProcessedECTFrame> getAimTopogram(Long ectDataId, List<Pixel> pixels) {
+        ECTData ectData = getECTData(ectDataId);
+        List<Frame> frames = getFrames(ectDataId);
+
+        List<ProcessedECTFrame> topogramValues = frames.parallelStream()
+                .map(f -> dbFormatConverter.processFrameToPreparedFrame(f, ectData))
+                .map(pf -> {
+                    List<TopogramECTValue> valuesPerTime = new ArrayList<>();
+                    for(int i = 0; i < pixels.size(); i++ ) {
+                        Pixel pixel = pixels.get(i);
+                        Float value = pf.getData().get(pixel.getRow()).get(pixel.getCol());
+                        valuesPerTime.add(new TopogramECTValue(value, pixel));
+                    }
+                    return new ProcessedECTFrame(pf.getMilliseconds(), valuesPerTime);
+                })
+                .collect(Collectors.toList());
+
+        return topogramValues;
+    }
+
+    public List<ProcessedECTFrame> getAimAverage(Long ectDataId) {
+        ECTData ectData = getECTData(ectDataId);
+        List<Frame> frames = getFrames(ectDataId);
+
+        List<ProcessedECTFrame> averageValues = frames.parallelStream()
+                .map(f -> dbFormatConverter.processFrameToPreparedFrame(f, ectData))
+                .map(pf -> new ProcessedECTFrame(pf.getMilliseconds(), pf.getFrameAverage()))
+                .collect(Collectors.toList());
+
+        return averageValues;
+    }
+
+    public List<ProcessedECTFrame> getAncAverage(Long ectDataId) {
+        ECTData ectData = getECTData(ectDataId);
+        List<Frame> frames = getFrames(ectDataId);
+
+        List<ProcessedECTFrame> averageValues = frames.parallelStream()
+                .map(f -> dbFormatConverter.processFrameToPreparedFrame(f, ectData))
+                .map(pf -> new ProcessedECTFrame(pf.getMilliseconds(), pf.getFrameAverage()))
+                .collect(Collectors.toList());
+
+        return averageValues;
+    }
+
+    public List<ProcessedECTFrame> getAncGraph(Long ectDataId, Pixel pixel) {
+        ECTData ectData = getECTData(ectDataId);
+        List<Frame> frames = getFrames(ectDataId);
+
+        List<ProcessedECTFrame> graphValues = frames.parallelStream()
+                .map(f -> dbFormatConverter.processFrameToPreparedFrame(f, ectData))
+                .map(pf -> new ProcessedECTFrame(pf.getMilliseconds(),
+                        pf.getData().get(pixel.getRow()).get(pixel.getCol())))
+                .collect(Collectors.toList());
+
+        return graphValues;
     }
 
     class Pair {
@@ -74,6 +148,8 @@ public class ECTService {
         changeEctDataStatus(ectData, DataStatus.PROCESSING);
 
         List<Frame> frames = fileManager.convertFileToFrames(ectData);
+
+        frameRepository.save(frames);
 
         long startTime = System.nanoTime();
         frameRepository.save(frames);
@@ -152,16 +228,6 @@ public class ECTService {
         return ectData;
     }
 
-    @Autowired
-    private TestFrameRowRepository testFrameRowRepository;
-
-    public void addTestFramesFromFile(FileData fileData) {
-        List<TestFrame> frames = fileManager.convertAimFileToTestFrames(fileData.getFullPath(), testFrameRowRepository);
-
-        testFrameRepository.save(frames);
-        System.out.println("d");
-    }
-
     public ECTData createECTData(FileData fileData, Long experimentId) {
         ECTData ectData = prepareECTData(fileData, experimentId);
 
@@ -171,11 +237,15 @@ public class ECTService {
     public PreparedPage<PreparedFrame> preparePageFromFrames(Page<Frame> frames, ECTData ectData) {
         PreparedPage<PreparedFrame> preparedPageFromFrames = createPreparedPage(frames);
 
-        List<PreparedFrame> preparedFrames = dbFormatConverter.getPreparedFrames(frames.getContent(), ectData);
+        List<PreparedFrame> preparedFrames = preparedFramesFromFrames(frames.getContent(), ectData);
 
         preparedPageFromFrames.setContent(preparedFrames);
 
         return preparedPageFromFrames;
+    }
+
+    public List<PreparedFrame> preparedFramesFromFrames(List<Frame> frames, ECTData ectData) {
+        return dbFormatConverter.getPreparedFrames(frames, ectData);
     }
 
     private PreparedPage<PreparedFrame> createPreparedPage(Page<Frame> frames) {
