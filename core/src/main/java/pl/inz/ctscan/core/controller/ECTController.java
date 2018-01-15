@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.*;
 import pl.inz.ctscan.core.service.ECTService;
+import pl.inz.ctscan.core.service.queue.QueueService;
 import pl.inz.ctscan.db.ect.ECTDataRepository;
 import pl.inz.ctscan.db.file.FileDataRepository;
 import pl.inz.ctscan.model.QueryOptions;
@@ -25,9 +26,17 @@ public class ECTController {
 
     private final ECTService ectService;
 
+    private final QueueService queueService;
+
     @Autowired
-    public ECTController(ECTService ectService) {
+    public ECTController(ECTService ectService, QueueService queueService) {
         this.ectService = ectService;
+        this.queueService = queueService;
+    }
+
+    @GetMapping("/process/{ectDataId}")
+    public boolean startProcessFrames(@PathVariable Long ectDataId) throws Exception {
+        return queueService.processFrames(ectDataId);
     }
 
     @PostMapping("/data/user/{username}")

@@ -10,18 +10,20 @@ public class ProcessFileThread implements Runnable {
 
     private ECTService ectService;
 
-    private ECTData ectData;
+    private Long ectDataId;
 
-    public ProcessFileThread(ECTService ectService, ECTData ectData) {
+    public ProcessFileThread(ECTService ectService, Long ectDataId) {
         this.ectService = ectService;
-        this.ectData = ectData;
+        this.ectDataId = ectDataId;
     }
 
     @Override
     public void run() {
         logger.info("Watek o id: " + Thread.currentThread().getId() + " rozpoczal przetwarzanie pliku");
 
-        if(ectData != null) {
+        if(ectDataId != null) {
+            ECTData ectData = ectService.getECTData(ectDataId);
+
             ectService.addFramesFromFile(ectData);
             logger.info("Zakończone przetwarzania w watku: " + Thread.currentThread().getId());
         }

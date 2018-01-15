@@ -42,7 +42,7 @@ public class TestController {
     int start = 0;
 
     @GetMapping("/queue")
-    public boolean executeAim() throws InterruptedException {
+    public boolean executeAim() throws Exception {
         Long ectDataId = 1L;
         String path = "/home/neo/_argo/tomografia/test/aim/test_76mb_full.aim" + start++;
 

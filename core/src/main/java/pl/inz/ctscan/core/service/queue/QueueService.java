@@ -6,6 +6,7 @@ import pl.inz.ctscan.core.service.ECTService;
 import pl.inz.ctscan.core.utils.queue.ProcessFileExecutor;
 import pl.inz.ctscan.core.utils.queue.ProcessFileThread;
 import pl.inz.ctscan.model.ect.ECTData;
+import pl.inz.ctscan.model.file.DataStatus;
 
 @Service
 public class QueueService {
@@ -20,12 +21,20 @@ public class QueueService {
         this.ectService = ectService;
     }
 
-    public void processFrames(Long ectDataId) throws InterruptedException {
+    public boolean processFrames(Long ectDataId) throws Exception {
         ECTData ectData = ectService.getECTData(ectDataId);
 
-        ProcessFileThread processFileThread = new ProcessFileThread(ectService, ectData);
+        if(ectData.getStatus() == DataStatus.TODO) {
+            ProcessFileThread processFileThread = new ProcessFileThread(ectService, ectDataId);
 
-        processFileExecutor.execute(processFileThread);
+            ectService.changeEctDataStatus(ectDataId, DataStatus.IN_QUEUE);
+
+            processFileExecutor.execute(processFileThread);
+
+            return true;
+        } else {
+            throw new Exception("Can't process file. File is in status: " + ectData.getStatus());
+        }
     }
 
 }

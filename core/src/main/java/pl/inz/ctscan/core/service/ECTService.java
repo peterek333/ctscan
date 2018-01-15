@@ -144,8 +144,14 @@ public class ECTService {
         return frameRepository.getFramesByEctDataId(ectDataId, pageRequest);
     }
 
-    private ECTData changeEctDataStatus(ECTData ectData, DataStatus processing) {
-        ectData.setStatus(processing);
+    public ECTData changeEctDataStatus(Long ectDataId, DataStatus status) {
+        ECTData ectData = getECTData(ectDataId);
+
+        return changeEctDataStatus(ectData, status);
+    }
+
+    private ECTData changeEctDataStatus(ECTData ectData, DataStatus status) {
+        ectData.setStatus(status);
 
         return ectDataRepository.save(ectData);
     }
