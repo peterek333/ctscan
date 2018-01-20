@@ -10,10 +10,6 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 @SpringBootApplication
 @ComponentScan(basePackages = { "pl.inz.ctscan" })
 @EnableAutoConfiguration
-//@EnableMongoAuditing
-//@EnableMongoRepositories(basePackages = "pl.inz.ctscan.db")
-//@EntityScan("pl.inz.ctscan.model")
-//@EnableJpaRepositories("pl.inz.ctscan.db")
 public class CoreApplication {
 
 	public static void main(String[] args) {

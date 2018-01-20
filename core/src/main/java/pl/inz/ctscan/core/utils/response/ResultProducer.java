@@ -27,4 +27,13 @@ public class ResultProducer {
 
         return response;
     }
+
+    public static Map<String, Object> prepareXY(Object axisX, Object axisY) {
+        Map<String, Object> result = new HashMap<>();
+
+        result.put("X", axisX);
+        result.put("Y", axisY);
+
+        return result;
+    }
 }

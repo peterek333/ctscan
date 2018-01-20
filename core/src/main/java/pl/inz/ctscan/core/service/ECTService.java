@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import pl.inz.ctscan.core.utils.FileManager;
 import pl.inz.ctscan.core.utils.db.DatabaseHelper;
 import pl.inz.ctscan.core.utils.response.DbFormatConverter;
+import pl.inz.ctscan.core.utils.response.ResultProducer;
 import pl.inz.ctscan.db.ect.ECTDataRepository;
 import pl.inz.ctscan.db.ect.FrameRepository;
 import pl.inz.ctscan.db.file.FileDataRepository;
@@ -22,6 +23,7 @@ import pl.inz.ctscan.model.response.PreparedPage;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
@@ -65,7 +67,7 @@ public class ECTService {
     private List<ProcessedECTFrame> prepareGraphValues(Long ectDataId, Pixel pixel) {
         ECTData ectData = getECTData(ectDataId);
         List<Frame> frames = getFrames(ectDataId);
-        FileData fileData = fileDataRepository.findOne(ectData.getFileDataId());
+         FileData fileData = fileDataRepository.findOne(ectData.getFileDataId());
 
         List<ProcessedECTFrame> graphValues = frames.parallelStream()
                 .map(f -> dbFormatConverter.processFrameToPreparedFrame(f, ectData, fileData.getFileType()))
@@ -74,6 +76,32 @@ public class ECTService {
                 .collect(Collectors.toList());
 
         return graphValues;
+    }
+
+    public Map<String, Object> getAimGraphInArray(Long ectDataId, Pixel pixel) {
+        return prepareGraphValuesInArray(ectDataId, pixel);
+    }
+
+    public Map<String,Object> getAncGraphInArray(Long ectDataId, Pixel pixel) {
+        return prepareGraphValuesInArray(ectDataId, pixel);
+    }
+
+    private Map<String,Object> prepareGraphValuesInArray(Long ectDataId, Pixel pixel) {
+        ECTData ectData = getECTData(ectDataId);
+        FileData fileData = fileDataRepository.findOne(ectData.getFileDataId());
+        List<Frame> frames = getFrames(ectDataId);
+
+        List<Long> timeAxisX = new ArrayList<>();
+        List<Float> valuesAxisY = new ArrayList<>();
+
+        frames.stream()
+                .map(f -> dbFormatConverter.processFrameToPreparedFrame(f, ectData, fileData.getFileType()))
+                .forEach(pf -> {
+                    timeAxisX.add(pf.getMilliseconds());
+                    valuesAxisY.add(pf.getData().get(pixel.getRow()).get(pixel.getCol()));
+                });
+
+        return ResultProducer.prepareXY(timeAxisX, valuesAxisY);
     }
 
     public List<ProcessedECTFrame> getAimTopogram(Long ectDataId, List<Pixel> pixels) {
@@ -97,8 +125,59 @@ public class ECTService {
         return topogramValues;
     }
 
+    public Map<String,Object> getAimTopogramInArray(Long ectDataId, List<Pixel> pixels) {
+        ECTData ectData = getECTData(ectDataId);
+        List<Frame> frames = getFrames(ectDataId);
+        FileData fileData = fileDataRepository.findOne(ectData.getFileDataId());
+
+        List<Long> timeAxisX = new ArrayList<>();
+        List<List<TopogramECTValue>> valuesAxisY = new ArrayList<>();
+
+        frames.stream()
+                .map(f -> dbFormatConverter.processFrameToPreparedFrame(f, ectData, fileData.getFileType()))
+                .forEach(pf -> {
+                    List<TopogramECTValue> valuesPerTime = new ArrayList<>();
+                    for(int i = 0; i < pixels.size(); i++ ) {
+                        Pixel pixel = pixels.get(i);
+                        Float value = pf.getData().get(pixel.getRow()).get(pixel.getCol());
+                        valuesPerTime.add(new TopogramECTValue(value, pixel));
+                    }
+
+                    timeAxisX.add(pf.getMilliseconds());
+                    valuesAxisY.add(valuesPerTime);
+                });
+
+        return ResultProducer.prepareXY(timeAxisX, valuesAxisY);
+    }
+
     public List<ProcessedECTFrame> getAimAverage(Long ectDataId) {
         return prepareAverage(ectDataId);
+    }
+
+    public Map<String, Object> getAimAverageInArray(Long ectDataId) {
+        return prepareAverageInArray(ectDataId);
+    }
+
+    public Map<String, Object> getAncAverageInArray(Long ectDataId) {
+        return prepareAverageInArray(ectDataId);
+    }
+
+    private Map<String,Object> prepareAverageInArray(Long ectDataId) {
+        ECTData ectData = getECTData(ectDataId);
+        List<Frame> frames = getFrames(ectDataId);
+        FileData fileData = fileDataRepository.findOne(ectData.getFileDataId());
+
+        List<Long> timeAxisX = new ArrayList<>();
+        List<Float> valuesAxisY = new ArrayList<>();
+
+        frames.stream()
+                .map(f -> dbFormatConverter.processFrameToPreparedFrame(f, ectData, fileData.getFileType()))
+                .forEach(pf -> {
+                    timeAxisX.add(pf.getMilliseconds());
+                    valuesAxisY.add(pf.getFrameAverage());
+                });
+
+        return ResultProducer.prepareXY(timeAxisX, valuesAxisY);
     }
 
     public List<ProcessedECTFrame> getAncAverage(Long ectDataId) {
