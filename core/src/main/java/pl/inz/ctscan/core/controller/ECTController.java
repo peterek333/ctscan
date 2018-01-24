@@ -121,7 +121,7 @@ public class ECTController {
         convertToFileService.sendTopogram("topogramAim", ectDataId, dataFormat, result, response);
     }
 
-    @PostMapping("/aim/graph/avg/{ectDataId}")
+    @GetMapping("/aim/graph/avg/{ectDataId}")
     public Map<String, Object> getAimAverage(@PathVariable Long ectDataId,
                                              @RequestParam(required = false) Boolean separateInArray) {
         Map<String, Object> result = new HashMap<>();
@@ -134,7 +134,7 @@ public class ECTController {
         return result;
     }
 
-    @PostMapping("/download/aim/graph/avg/{ectDataId}")
+    @GetMapping("/download/aim/graph/avg/{ectDataId}")
     public void getAimAverageFile(@PathVariable Long ectDataId,
                                   @RequestParam String dataFormat,
                                   HttpServletResponse response) throws IOException {
@@ -145,7 +145,7 @@ public class ECTController {
         convertToFileService.sendGraph("averageAim", ectDataId, dataFormat, result, response);
     }
 
-    @PostMapping("/anc/graph/avg/{ectDataId}")
+    @GetMapping("/anc/graph/avg/{ectDataId}")
     public Map<String, Object> getAncAverage(@PathVariable Long ectDataId,
                                              @RequestParam(required = false) Boolean separateInArray) {
         Map<String, Object> result = new HashMap<>();
@@ -158,7 +158,7 @@ public class ECTController {
         return result;
     }
 
-    @PostMapping("/download/anc/graph/avg/{ectDataId}")
+    @GetMapping("/download/anc/graph/avg/{ectDataId}")
     public void getAncAverageFile(@PathVariable Long ectDataId,
                                   @RequestParam String dataFormat,
                                   HttpServletResponse response) throws IOException {

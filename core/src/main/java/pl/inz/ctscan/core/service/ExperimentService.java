@@ -32,4 +32,16 @@ public class ExperimentService {
     public List<Experiment> getListExperimentCreatedBy(String createdBy) {
         return experimentRepository.findAllByCreatedBy(createdBy);
     }
+
+    public Experiment updateExperiment(Experiment experiment) {
+        return experimentRepository.save(experiment);
+    }
+
+    public Experiment deleteExperiment(Long id) {
+        Experiment experiment = experimentRepository.findOne(id);
+
+        experimentRepository.delete(id);
+
+        return experiment;
+    }
 }

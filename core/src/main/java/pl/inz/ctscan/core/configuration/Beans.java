@@ -7,6 +7,9 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+import org.springframework.web.servlet.config.annotation.CorsRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 import pl.inz.ctscan.core.utils.FileManager;
 import pl.inz.ctscan.core.utils.ImageConverter;
 import pl.inz.ctscan.core.utils.queue.ProcessFileExecutor;
@@ -54,5 +57,16 @@ public class Beans {
     @Bean
     public DbFormatConverter dbFormatConverter() {
         return new DbFormatConverter();
+    }
+
+    @Bean
+    public WebMvcConfigurer corsConfigurer() {
+        return new WebMvcConfigurerAdapter() {
+            @Override
+            public void addCorsMappings(CorsRegistry registry) {
+                registry.addMapping("/**")
+                        .allowedMethods("HEAD", "GET", "PUT", "POST", "DELETE");
+            }
+        };
     }
 }

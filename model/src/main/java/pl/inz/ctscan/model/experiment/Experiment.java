@@ -18,7 +18,7 @@ public class Experiment extends ManualEntity {
 
     private String title;
 
-    @ElementCollection
+    @ElementCollection(fetch = FetchType.EAGER)
     private Set<String> keywords = new HashSet<>();
 
     private long finishedTimestamp;

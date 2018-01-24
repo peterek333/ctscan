@@ -24,13 +24,23 @@ public class ExperimentController {
         return experimentService.getExperiment(id);
     }
 
-    @GetMapping("/list")
+    @GetMapping
     List<Experiment> getListExperiment() {
         return experimentService.getListExperiment();
     }
 
-//    @PostMapping("/list")
-//    List<Experiment> getListExperimentCreatedBy(@RequestBody String createdBy) {
-//        return experimentService.getListExperimentCreatedBy(createdBy);
-//    }
+    @PutMapping
+    Experiment updateExperiment(@RequestBody Experiment experiment) {
+        return experimentService.updateExperiment(experiment);
+    }
+
+    @DeleteMapping("/{experimentId}")
+    Experiment deleteExperiment(@PathVariable("experimentId") Long id) {
+        return experimentService.deleteExperiment(id);
+    }
+
+    @PostMapping("/list")
+    List<Experiment> getListExperimentCreatedBy(@RequestBody String createdBy) {
+        return experimentService.getListExperimentCreatedBy(createdBy);
+    }
 }

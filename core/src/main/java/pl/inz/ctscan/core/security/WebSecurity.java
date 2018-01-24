@@ -10,7 +10,6 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
-import static pl.inz.ctscan.core.utils.SecurityConstants.LOG_IN_URL;
 import static pl.inz.ctscan.core.utils.SecurityConstants.SIGN_UP_URL;
 
 @EnableWebSecurity
@@ -29,7 +28,7 @@ public class WebSecurity extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         String prefix = "/admin";
 
-        http.cors().and().csrf().disable().authorizeRequests()
+        http.csrf().disable().authorizeRequests()
                 .antMatchers(HttpMethod.POST, SIGN_UP_URL).permitAll()
                 .antMatchers(HttpMethod.GET,
                         "/",
