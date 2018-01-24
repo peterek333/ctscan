@@ -3,7 +3,9 @@ package pl.inz.ctscan.model.file;
 import lombok.*;
 import pl.inz.ctscan.model.base.ManualEntity;
 
-import javax.persistence.*;
+import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 
 @Getter
 @Setter

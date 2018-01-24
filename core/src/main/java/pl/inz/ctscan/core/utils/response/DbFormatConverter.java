@@ -9,9 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static pl.inz.ctscan.core.utils.FileConstants.AIM_FRAME_SIZE_COL;
-import static pl.inz.ctscan.core.utils.FileConstants.AIM_FRAME_SIZE_ROW;
-import static pl.inz.ctscan.core.utils.FileConstants.CSV_SEPARATOR;
+import static pl.inz.ctscan.core.utils.FileConstants.*;
 
 public class DbFormatConverter {
 

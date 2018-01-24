@@ -38,22 +38,17 @@ public class ProcessFileExecutor {
 
     public void execute(Runnable task) {
         if(executor.isShutdown()) {
-            System.out.println("Dodaje task do listy");
             tasks.add(task);
 
             if(recreateThread == null) {
-                System.out.println("Tworze recreateThread");
-
                 recreateThread = new Thread(() -> {
                     while(!executor.isTerminated()) {
-                        System.out.println("Czekam, az bedzie terminated");
                         try {
                             Thread.sleep(2000);
                         } catch (InterruptedException e) {
                             e.printStackTrace();
                         }
                     }
-                    System.out.println("Tworze nowy executor");
                     executor = createFixedThreadPool(MAX_THREADS);
 
                     executeTasksFromList();
@@ -62,29 +57,18 @@ public class ProcessFileExecutor {
                 });
 
                 recreateThread.start();
-            } else {
-                System.out.println("Recreate zajete");
             }
-
         } else {
-            System.out.println("Dodaje task");
             executor.execute(task);
         }
 
-        System.out.println("Free " + Runtime.getRuntime().freeMemory());
-        System.out.println("Max " + Runtime.getRuntime().maxMemory());
-        System.out.println("Total " + Runtime.getRuntime().totalMemory());
-
         if(MemoryManager.freeMemoryLowerThan(MemoryManager.MB_400_IN_BYTES) && !executor.isShutdown()) {
-            System.out.println("SHUTDOWN!!!");
             executor.shutdown();
         }
     }
 
     private void executeTasksFromList() {
         List<Runnable> tempTasks = new ArrayList<>();
-
-        System.out.println("przed dodaniem " + tasks.size());
 
         for(Runnable task: tasks) {
             executor.execute(task);
@@ -93,6 +77,5 @@ public class ProcessFileExecutor {
         }
 
         tasks.removeAll(tempTasks);
-        System.out.println("po usunieciu " + tasks.size());
     }
 }

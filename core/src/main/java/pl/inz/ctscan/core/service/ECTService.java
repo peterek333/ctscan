@@ -17,14 +17,13 @@ import pl.inz.ctscan.model.ect.utils.Pixel;
 import pl.inz.ctscan.model.file.DataStatus;
 import pl.inz.ctscan.model.file.FileData;
 import pl.inz.ctscan.model.file.FileType;
+import pl.inz.ctscan.model.response.PreparedPage;
 import pl.inz.ctscan.model.response.ProcessedECTFrame;
 import pl.inz.ctscan.model.response.TopogramECTValue;
-import pl.inz.ctscan.model.response.PreparedPage;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 @Service

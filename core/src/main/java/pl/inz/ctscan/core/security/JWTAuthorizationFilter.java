@@ -1,7 +1,6 @@
 package pl.inz.ctscan.core.security;
 
 import io.jsonwebtoken.Jwts;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -9,7 +8,6 @@ import org.springframework.security.web.authentication.www.BasicAuthenticationFi
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.context.support.WebApplicationContextUtils;
 import pl.inz.ctscan.core.service.UserService;
-import pl.inz.ctscan.db.ApplicationUserRepository;
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletContext;
@@ -19,9 +17,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.ArrayList;
 
-import static pl.inz.ctscan.core.utils.SecurityConstants.HEADER_STRING;
-import static pl.inz.ctscan.core.utils.SecurityConstants.SECRET;
-import static pl.inz.ctscan.core.utils.SecurityConstants.TOKEN_PREFIX;
+import static pl.inz.ctscan.core.utils.SecurityConstants.*;
 
 public class JWTAuthorizationFilter extends BasicAuthenticationFilter {
 

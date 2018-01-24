@@ -5,9 +5,10 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import pl.inz.ctscan.model.base.ManualEntity;
 
-import javax.persistence.*;
+import javax.persistence.ElementCollection;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 @Getter

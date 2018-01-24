@@ -11,7 +11,6 @@ import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 import pl.inz.ctscan.core.utils.FileManager;
-import pl.inz.ctscan.core.utils.ImageConverter;
 import pl.inz.ctscan.core.utils.queue.ProcessFileExecutor;
 import pl.inz.ctscan.core.utils.response.DbFormatConverter;
 import pl.inz.ctscan.model.validator.UserValidator;
@@ -39,11 +38,6 @@ public class Beans {
     @Bean
     public FileManager fileManager() {
         return new FileManager();
-    }
-
-    @Bean
-    public ImageConverter imageConverter() {
-        return new ImageConverter();
     }
 
     @Bean

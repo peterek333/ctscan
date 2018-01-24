@@ -7,15 +7,18 @@ import pl.inz.ctscan.core.service.ConvertToFileService;
 import pl.inz.ctscan.core.service.ECTService;
 import pl.inz.ctscan.core.service.queue.QueueService;
 import pl.inz.ctscan.model.QueryOptions;
-import pl.inz.ctscan.model.ect.*;
+import pl.inz.ctscan.model.ect.ECTData;
+import pl.inz.ctscan.model.ect.Frame;
+import pl.inz.ctscan.model.ect.PreparedFrame;
 import pl.inz.ctscan.model.ect.utils.Pixel;
-import pl.inz.ctscan.model.response.ProcessedECTFrame;
 import pl.inz.ctscan.model.response.PreparedPage;
+import pl.inz.ctscan.model.response.ProcessedECTFrame;
 
-import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/ect")
