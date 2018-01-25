@@ -54,7 +54,7 @@ public class ECTController {
     }
 
     @GetMapping("/frame/{ectDataId}")
-    public PreparedFrame getFrames(@PathVariable Long ectDataId,
+    public PreparedFrame getFrame(@PathVariable Long ectDataId,
                                    @RequestParam Long frameNumber) {
 
         Frame frame = ectService.getFrame(ectDataId, frameNumber);
@@ -62,6 +62,19 @@ public class ECTController {
 
         return ectService.preparedFrameFromFrame(frame, ectData);
     }
+
+    @GetMapping("/download/frame/{ectDataId}")
+    public void getFrameFile(@PathVariable Long ectDataId,
+                             @RequestParam Long frameNumber,
+                             HttpServletResponse response) throws IOException {
+        Frame frame = ectService.getFrame(ectDataId, frameNumber);
+        ECTData ectData = ectService.getECTData(ectDataId);
+
+        PreparedFrame preparedFrame = ectService.preparedFrameFromFrame(frame, ectData);
+
+        convertToFileService.sendPreparedFrame("frame", ectDataId, preparedFrame, response);
+    }
+
     @GetMapping("/frames/{ectDataId}")
     public List<PreparedFrame> getFrames(@PathVariable Long ectDataId) {
 
@@ -131,6 +144,18 @@ public class ECTController {
         Map<String, Object> result = getAimTopogram(ectDataId, separateInArray, pixels);
 
         convertToFileService.sendTopogram("topogramAim", ectDataId, dataFormat, result, response);
+    }
+
+    @PostMapping("/aim/download/multi/graph/{ectDataId}")
+    public void getAimMultiFile(@PathVariable Long ectDataId,
+                                @RequestParam String dataFormat,
+                                @RequestBody List<Pixel> pixels,
+                                HttpServletResponse response) throws IOException {
+
+        Boolean separateInArray = dataFormat.equals("txt");
+        Map<String, Object> result = getAimTopogram(ectDataId, separateInArray, pixels);
+
+        convertToFileService.sendTopogram("multiGraph", ectDataId, dataFormat, result, response);
     }
 
     @GetMapping("/aim/graph/avg/{ectDataId}")

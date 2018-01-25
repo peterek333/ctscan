@@ -1,6 +1,7 @@
 package pl.inz.ctscan.core.service;
 
 import org.springframework.stereotype.Service;
+import pl.inz.ctscan.model.ect.PreparedFrame;
 import pl.inz.ctscan.model.response.ProcessedECTFrame;
 import pl.inz.ctscan.model.response.TopogramECTValue;
 
@@ -27,6 +28,38 @@ public class ConvertToFileService {
 
         out.flush();
         out.close();
+    }
+
+    public void sendPreparedFrame(String frameName, Long ectDataId, PreparedFrame frame, HttpServletResponse response) throws IOException {
+        response.setContentType("text/plain");
+        response.setHeader("Content-Disposition","attachment;filename=" +
+                prepareFilenameByFormat(frameName, ectDataId, "txt"));
+
+        ServletOutputStream out = response.getOutputStream();
+        sendTXTPreparedFrame(out, frame);
+
+        out.flush();
+        out.close();
+
+    }
+
+    private void sendTXTPreparedFrame(ServletOutputStream out, PreparedFrame frame) {
+        List<List<Float>> data = frame.getData();
+
+        data.stream().forEach(row -> {
+            row.stream().forEach(value -> {
+                try {
+                    out.print(value + " ");
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            });
+            try {
+                out.print(";");
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        });
     }
 
     private void sendCSVTopogram(ServletOutputStream out, Map<String, Object> result) throws IOException {
