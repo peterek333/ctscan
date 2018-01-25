@@ -55,7 +55,7 @@ public class ECTController {
 
     @GetMapping("/frame/{ectDataId}")
     public PreparedFrame getFrames(@PathVariable Long ectDataId,
-                                         @RequestParam("time") Long frameNumber) {
+                                   @RequestParam Long frameNumber) {
 
         Frame frame = ectService.getFrame(ectDataId, frameNumber);
         ECTData ectData = ectService.getECTData(ectDataId);
