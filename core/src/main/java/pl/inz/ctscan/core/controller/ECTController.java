@@ -53,6 +53,15 @@ public class ECTController {
         return ectService.getECTData(ectDataId);
     }
 
+    @GetMapping("/frame/{ectDataId}")
+    public PreparedFrame getFrames(@PathVariable Long ectDataId,
+                                         @RequestParam("time") Long frameNumber) {
+
+        Frame frame = ectService.getFrame(ectDataId, frameNumber);
+        ECTData ectData = ectService.getECTData(ectDataId);
+
+        return ectService.preparedFrameFromFrame(frame, ectData);
+    }
     @GetMapping("/frames/{ectDataId}")
     public List<PreparedFrame> getFrames(@PathVariable Long ectDataId) {
 

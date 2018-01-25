@@ -272,6 +272,12 @@ public class ECTService {
         return dbFormatConverter.getPreparedFrames(frames, ectData, fileData.getFileType());
     }
 
+    public PreparedFrame preparedFrameFromFrame(Frame frame, ECTData ectData) {
+        FileData fileData = fileDataRepository.findOne(ectData.getFileDataId());
+
+        return dbFormatConverter.processFrameToPreparedFrame(frame, ectData, fileData.getFileType());
+    }
+
     private PreparedPage<PreparedFrame> createPreparedPage(Page<Frame> frames) {
         return PreparedPage.<PreparedFrame>builder()
                 .first(frames.isFirst())
@@ -283,5 +289,9 @@ public class ECTService {
                 .totalElements(frames.getTotalElements())
                 .totalPages(frames.getTotalPages())
                 .build();
+    }
+
+    public Frame getFrame(Long ectDataId, Long frameNumber) {
+        return frameRepository.getFrameByEctDataIdAndId(ectDataId, frameNumber);
     }
 }

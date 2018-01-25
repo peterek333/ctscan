@@ -11,4 +11,5 @@ public interface FrameRepository extends JpaRepository<Frame, Long> {
 
     List<Frame> getFramesByEctDataId(Long ectDataId);
     Page<Frame> getFramesByEctDataId(Long ectDataId, Pageable pageRequest);
+    Frame getFrameByEctDataIdAndId(Long ectDataId, Long frameId);
 }
