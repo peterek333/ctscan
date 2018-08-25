@@ -1,23 +1,18 @@
 package pl.inz.ctscan.model.ect;
 
-import lombok.*;
-import pl.inz.ctscan.model.base.AbstractEntity;
+import lombok.Getter;
+import lombok.Setter;
 
-import java.util.List;
+import javax.persistence.Column;
+import javax.persistence.Entity;
 
 @Getter
 @Setter
-@NoArgsConstructor
-@RequiredArgsConstructor
-public class Frame extends AbstractEntity {
+@Entity
+public class Frame extends FrameBase {
 
-    @NonNull
-    private long number;
+    @Column(length = 10000)
+    private String data;
 
-    @NonNull
-    private long milliseconds;
-
-    //private float
-
-    private List<List<Float>> data;
+    private Float frameAverage;
 }

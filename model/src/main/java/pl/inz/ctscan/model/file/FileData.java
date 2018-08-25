@@ -1,15 +1,21 @@
 package pl.inz.ctscan.model.file;
 
-import lombok.Builder;
-import lombok.Getter;
-import lombok.Setter;
-import pl.inz.ctscan.model.base.AbstractEntity;
+import lombok.*;
+import pl.inz.ctscan.model.base.ManualEntity;
+
+import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 
 @Getter
 @Setter
 @Builder
-public class FileData extends AbstractEntity {
+@NoArgsConstructor
+@AllArgsConstructor
+@Entity
+public class FileData extends ManualEntity {
 
+    @Enumerated(EnumType.STRING)
     FileType fileType;
 
     String originalFilename;

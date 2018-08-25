@@ -2,19 +2,19 @@ package pl.inz.ctscan.model;
 
 import lombok.Getter;
 import lombok.Setter;
+import pl.inz.ctscan.model.base.AutoEntity;
 
-import javax.validation.constraints.NotEmpty;
+import javax.persistence.Entity;
 import javax.validation.constraints.NotNull;
 
 @Getter
 @Setter
-public class ApplicationUser {
+@Entity
+public class ApplicationUser extends AutoEntity {
 
     @NotNull
-    @NotEmpty
     private String email;
 
     @NotNull
-    @NotEmpty
     private String password;
 }

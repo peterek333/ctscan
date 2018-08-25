@@ -8,14 +8,11 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.WebDataBinder;
-import org.springframework.web.bind.annotation.InitBinder;
 import pl.inz.ctscan.db.ApplicationUserRepository;
 import pl.inz.ctscan.model.ApplicationUser;
 import pl.inz.ctscan.model.validator.UserValidator;
 
 import javax.validation.constraints.NotNull;
-import java.util.ArrayList;
 import java.util.Collections;
 
 @Service
@@ -34,7 +31,7 @@ public class UserService implements UserDetailsService {
     public void signUp(ApplicationUser user) {
         user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
 
-        applicationUserRepository.insert(user);
+        applicationUserRepository.save(user);
     }
 
     @Override

@@ -1,51 +1,40 @@
 package pl.inz.ctscan.core.service.queue;
 
-import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import pl.inz.ctscan.core.utils.FileManager;
+import pl.inz.ctscan.core.service.ECTService;
+import pl.inz.ctscan.core.utils.queue.ProcessFileExecutor;
 import pl.inz.ctscan.core.utils.queue.ProcessFileThread;
-import pl.inz.ctscan.core.utils.queue.pool.ProcessFileExecutor;
-import pl.inz.ctscan.db.ect.FrameRepository;
-import pl.inz.ctscan.db.ect.MeasurementRepository;
-import pl.inz.ctscan.model.ect.Measurement;
-
-import java.util.concurrent.ArrayBlockingQueue;
-import java.util.concurrent.BlockingQueue;
+import pl.inz.ctscan.model.ect.ECTData;
+import pl.inz.ctscan.model.file.DataStatus;
 
 @Service
 public class QueueService {
 
     private final ProcessFileExecutor processFileExecutor;
 
-    private final FileManager fileManager;
-
-    private final FrameRepository frameRepository;
-
-    private final MeasurementRepository measurementRepository;
-
-    private BlockingQueue<ProcessFileThread> processFileThreadsQueue;
+    private final ECTService ectService;
 
     @Autowired
-    public QueueService(ProcessFileExecutor processFileExecutor, MeasurementRepository measurementRepository, FileManager fileManager, FrameRepository frameRepository) {
+    public QueueService(ProcessFileExecutor processFileExecutor, ECTService ectService) {
         this.processFileExecutor = processFileExecutor;
-        this.measurementRepository = measurementRepository;
-        this.fileManager = fileManager;
-        this.frameRepository = frameRepository;
-
-        int MAX_THREADS = 2;
-        processFileThreadsQueue = new ArrayBlockingQueue<>(MAX_THREADS);
+        this.ectService = ectService;
     }
 
-    public void processAimFrames(String measurementId, String path) throws InterruptedException {
-        ProcessFileThread processFileThread =
-                new ProcessFileThread(fileManager, frameRepository, measurementRepository, measurementId, path);
+    public boolean processFrames(Long ectDataId) throws Exception {
+        ECTData ectData = ectService.getECTData(ectDataId);
 
-        processFileExecutor.execute(processFileThread);
-    }
+        if(ectData.getStatus() == DataStatus.TODO) {
+            ProcessFileThread processFileThread = new ProcessFileThread(ectService, ectDataId);
 
-    public void processAimFramesByConsumer(String measurementId, String path) {
+            ectService.changeEctDataStatus(ectDataId, DataStatus.IN_QUEUE);
 
+            processFileExecutor.execute(processFileThread);
+
+            return true;
+        } else {
+            throw new Exception("Can't process file. File is in status: " + ectData.getStatus());
+        }
     }
 
 }
