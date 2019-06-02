@@ -1,0 +1,70 @@
+{
+  "id": "5ba45722-f0ac-eb20-6a8b-2ef8eae2764a",
+  "name": "Postman Globals",
+  "values": [
+    {
+      "key": "ctscan-domain",
+      "value": "localhost:8080",
+      "enabled": true,
+      "type": "text"
+    },
+    {
+      "key": "ctscan-jwt-token",
+      "value": "Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ0ZXN0QHRlc3QuY29tIiwiZXhwIjoxNTE3Njg3ODkxfQ.SMGyrbfa6oJtocd_u79bavCk2LjMkwGtw4Njy9SM-2z91ykU_k8MJ4QTELR1BUVi6jAOrDP9Fluw8c3Bsdz6uQ",
+      "enabled": true,
+      "type": "text"
+    },
+    {
+      "key": "experimentId",
+      "value": "1",
+      "enabled": true,
+      "type": "text"
+    },
+    {
+      "key": "ectDataId",
+      "value": "1",
+      "enabled": true,
+      "type": "text"
+    },
+    {
+      "key": "username",
+      "value": "test@test.com",
+      "enabled": true,
+      "type": "text"
+    },
+    {
+      "key": "separateInArray",
+      "value": "true",
+      "enabled": true,
+      "type": "text"
+    },
+    {
+      "key": "dataFormat",
+      "value": "csv",
+      "enabled": true,
+      "type": "text"
+    },
+    {
+      "key": "ancDataId",
+      "value": "2",
+      "enabled": true,
+      "type": "text"
+    },
+    {
+      "key": "fileDataId",
+      "value": "1",
+      "enabled": true,
+      "type": "text"
+    },
+    {
+      "key": "inzEctDataId",
+      "value": "1",
+      "description": "",
+      "type": "text",
+      "enabled": true
+    }
+  ],
+  "_postman_variable_scope": "globals",
+  "_postman_exported_at": "2018-01-24T21:47:06.738Z",
+  "_postman_exported_using": "Postman/5.5.0"
+}

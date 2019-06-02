@@ -1,0 +1,260 @@
+{
+	"info": {
+		"name": "_testy",
+		"_postman_id": "4c2d8b46-46ad-c3e8-25c5-2436ebfe4bc3",
+		"description": "",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "scenariusz 1 wykres",
+			"description": "",
+			"item": [
+				{
+					"name": "krok 1 obraz 32x32",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"page\": 18,\n\t\"limit\": 1\n}"
+						},
+						"url": {
+							"raw": "{{ctscan-domain}}/ect/frames/{{inzEctDataId}}",
+							"host": [
+								"{{ctscan-domain}}"
+							],
+							"path": [
+								"ect",
+								"frames",
+								"{{inzEctDataId}}"
+							]
+						},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "krok 2 wykres wartosci w czasie",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"row\": 8,\n\t\"col\": 12\n}"
+						},
+						"url": {
+							"raw": "{{ctscan-domain}}/ect/download/aim/graph/{{inzEctDataId}}?dataFormat=txt",
+							"host": [
+								"{{ctscan-domain}}"
+							],
+							"path": [
+								"ect",
+								"download",
+								"aim",
+								"graph",
+								"{{inzEctDataId}}"
+							],
+							"query": [
+								{
+									"key": "dataFormat",
+									"value": "txt",
+									"equals": true
+								}
+							]
+						},
+						"description": ""
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "scenariusz 2 obraz topograficzny",
+			"description": "",
+			"item": [
+				{
+					"name": "krok 1 wykres srednich wartosci w czasie",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {},
+						"url": {
+							"raw": "{{ctscan-domain}}/ect/download/aim/graph/avg/{{inzEctDataId}}?dataFormat=txt",
+							"host": [
+								"{{ctscan-domain}}"
+							],
+							"path": [
+								"ect",
+								"download",
+								"aim",
+								"graph",
+								"avg",
+								"{{inzEctDataId}}"
+							],
+							"query": [
+								{
+									"key": "dataFormat",
+									"value": "txt",
+									"equals": true
+								}
+							]
+						},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "krok 2 obraz 32x32",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {},
+						"url": {
+							"raw": "{{ctscan-domain}}/ect/frame/{{inzEctDataId}}?time=4000",
+							"host": [
+								"{{ctscan-domain}}"
+							],
+							"path": [
+								"ect",
+								"frame",
+								"{{inzEctDataId}}"
+							],
+							"query": [
+								{
+									"key": "time",
+									"value": "4000",
+									"equals": true
+								}
+							]
+						},
+						"description": ""
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "scenariusz 3 topogram",
+			"description": "",
+			"item": [
+				{
+					"name": "otrzymanie topogramu",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "[\n\t{ \"row\": 0, \"col\": 14 },\n\t{ \"row\": 1, \"col\": 14 },\n\t{ \"row\": 2, \"col\": 14 },\n\t{ \"row\": 3, \"col\": 14 },\n\t{ \"row\": 4, \"col\": 14 },\n\t{ \"row\": 5, \"col\": 14 },\n\t{ \"row\": 6, \"col\": 14 },\n\t{ \"row\": 7, \"col\": 14 },\n\t{ \"row\": 8, \"col\": 14 },\n\t{ \"row\": 9, \"col\": 14 },\n\t{ \"row\": 10, \"col\": 14 },\n\t{ \"row\": 11, \"col\": 14 },\n\t{ \"row\": 12, \"col\": 14 },\n\t{ \"row\": 13, \"col\": 14 },\n\t{ \"row\": 14, \"col\": 14 },\n\t{ \"row\": 15, \"col\": 14 },\n\t{ \"row\": 16, \"col\": 14 },\n\t{ \"row\": 17, \"col\": 14 },\n\t{ \"row\": 18, \"col\": 14 },\n\t{ \"row\": 19, \"col\": 14 },\n\t{ \"row\": 20, \"col\": 14 },\n\t{ \"row\": 21, \"col\": 14 },\n\t{ \"row\": 22, \"col\": 14 },\n\t{ \"row\": 23, \"col\": 14 },\n\t{ \"row\": 24, \"col\": 14 },\n\t{ \"row\": 25, \"col\": 14 },\n\t{ \"row\": 26, \"col\": 14 },\n\t{ \"row\": 27, \"col\": 14 },\n\t{ \"row\": 28, \"col\": 14 },\n\t{ \"row\": 29, \"col\": 14 },\n\t{ \"row\": 30, \"col\": 14 },\n\t{ \"row\": 31, \"col\": 14 }\n]"
+						},
+						"url": {
+							"raw": "{{ctscan-domain}}/ect/aim/topogram/{{inzEctDataId}}?separateInArray=true",
+							"host": [
+								"{{ctscan-domain}}"
+							],
+							"path": [
+								"ect",
+								"aim",
+								"topogram",
+								"{{inzEctDataId}}"
+							],
+							"query": [
+								{
+									"key": "separateInArray",
+									"value": "true",
+									"equals": true
+								}
+							]
+						},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "topogram krotsza wersja",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "[\n\t{ \"row\": 11, \"col\": 0 },\n\t{ \"row\": 12, \"col\": 0 },\n\t{ \"row\": 13, \"col\": 0 },\n\t{ \"row\": 14, \"col\": 0 },\n\t{ \"row\": 15, \"col\": 0 },\n\t{ \"row\": 16, \"col\": 0 },\n\t{ \"row\": 17, \"col\": 0 },\n\t{ \"row\": 18, \"col\": 0 },\n\t{ \"row\": 19, \"col\": 0 },\n\t{ \"row\": 20, \"col\": 0 }\n]"
+						},
+						"url": {
+							"raw": "{{ctscan-domain}}/ect/aim/topogram/{{inzEctDataId}}?separateInArray=true",
+							"host": [
+								"{{ctscan-domain}}"
+							],
+							"path": [
+								"ect",
+								"aim",
+								"topogram",
+								"{{inzEctDataId}}"
+							],
+							"query": [
+								{
+									"key": "separateInArray",
+									"value": "true",
+									"equals": true
+								}
+							]
+						},
+						"description": ""
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"auth": {
+		"type": "bearer",
+		"bearer": [
+			{
+				"key": "token",
+				"value": "{{ctscan-jwt-token}}",
+				"type": "string"
+			}
+		]
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"id": "8d000e87-5517-4914-ab18-b4fe2eb0d753",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"id": "9e8b9ab1-5ff4-4e55-be0d-c1b6022004fc",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	]
+}

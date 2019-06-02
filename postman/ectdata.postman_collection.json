@@ -1,0 +1,554 @@
+{
+	"info": {
+		"name": "ectdata",
+		"_postman_id": "d1f6c7ab-3a1c-b5d3-2706-4bfc1dab07c8",
+		"description": "",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "json",
+			"description": "",
+			"item": [
+				{
+					"name": "frames",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {},
+						"url": {
+							"raw": "{{ctscan-domain}}/ect/frames/{{ectDataId}}",
+							"host": [
+								"{{ctscan-domain}}"
+							],
+							"path": [
+								"ect",
+								"frames",
+								"{{ectDataId}}"
+							]
+						},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "mała część frames",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"page\": 0,\n\t\"limit\": 500\n}"
+						},
+						"url": {
+							"raw": "{{ctscan-domain}}/ect/frames/{{ectDataId}}",
+							"host": [
+								"{{ctscan-domain}}"
+							],
+							"path": [
+								"ect",
+								"frames",
+								"{{ectDataId}}"
+							]
+						},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "zmiany wartosci w czasie AIM",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"row\": 15,\n\t\"col\": 15\n}"
+						},
+						"url": {
+							"raw": "{{ctscan-domain}}/ect/aim/graph/{{ectDataId}}?separateInArray={{separateInArray}}",
+							"host": [
+								"{{ctscan-domain}}"
+							],
+							"path": [
+								"ect",
+								"aim",
+								"graph",
+								"{{ectDataId}}"
+							],
+							"query": [
+								{
+									"key": "separateInArray",
+									"value": "{{separateInArray}}",
+									"equals": true
+								}
+							]
+						},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "zmiany wartości w czasie ANC",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"row\": 1,\n\t\"col\": 1\n}"
+						},
+						"url": {
+							"raw": "{{ctscan-domain}}/ect/anc/graph/{{ancDataId}}?separateInArray={{separateInArray}}",
+							"host": [
+								"{{ctscan-domain}}"
+							],
+							"path": [
+								"ect",
+								"anc",
+								"graph",
+								"{{ancDataId}}"
+							],
+							"query": [
+								{
+									"key": "separateInArray",
+									"value": "{{separateInArray}}",
+									"equals": true
+								}
+							]
+						},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "zmiany średnie w czasie AIM",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {},
+						"url": {
+							"raw": "{{ctscan-domain}}/ect/aim/graph/avg/{{ectDataId}}?separateInArray={{separateInArray}}",
+							"host": [
+								"{{ctscan-domain}}"
+							],
+							"path": [
+								"ect",
+								"aim",
+								"graph",
+								"avg",
+								"{{ectDataId}}"
+							],
+							"query": [
+								{
+									"key": "separateInArray",
+									"value": "{{separateInArray}}",
+									"equals": true
+								}
+							]
+						},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "zmiany średnie w czasie ANC",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {},
+						"url": {
+							"raw": "{{ctscan-domain}}/ect/anc/graph/avg/{{ancDataId}}?separateInArray={{separateInArray}}",
+							"host": [
+								"{{ctscan-domain}}"
+							],
+							"path": [
+								"ect",
+								"anc",
+								"graph",
+								"avg",
+								"{{ancDataId}}"
+							],
+							"query": [
+								{
+									"key": "separateInArray",
+									"value": "{{separateInArray}}",
+									"equals": true
+								}
+							]
+						},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "topogram",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "[\n\t{ \n\t\t\"row\": 1,\n\t\t\"col\": 2\n\t},\n\t{ \n\t\t\"row\": 1,\n\t\t\"col\": 3\n\t},\n\t{ \n\t\t\"row\": 1,\n\t\t\"col\": 4\n\t}\n]"
+						},
+						"url": {
+							"raw": "{{ctscan-domain}}/ect/aim/topogram/{{ectDataId}}?separateInArray={{separateInArray}}",
+							"host": [
+								"{{ctscan-domain}}"
+							],
+							"path": [
+								"ect",
+								"aim",
+								"topogram",
+								"{{ectDataId}}"
+							],
+							"query": [
+								{
+									"key": "separateInArray",
+									"value": "{{separateInArray}}",
+									"equals": true
+								}
+							]
+						},
+						"description": ""
+					},
+					"response": []
+				}
+			],
+			"auth": {
+				"type": "bearer",
+				"bearer": [
+					{
+						"key": "token",
+						"value": "{{ctscan-jwt-token}}",
+						"type": "string"
+					}
+				]
+			},
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "ad60b872-244c-4edc-be8d-16b9ed406175",
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"id": "9a787814-7806-4055-831a-a2e4ff26de52",
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				}
+			]
+		},
+		{
+			"name": "download",
+			"description": "",
+			"item": [
+				{
+					"name": "zmiany wartosci w czasie AIM",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"row\": 15,\n\t\"col\": 15\n}"
+						},
+						"url": {
+							"raw": "{{ctscan-domain}}/ect/download/aim/graph/{{ectDataId}}?dataFormat={{dataFormat}}",
+							"host": [
+								"{{ctscan-domain}}"
+							],
+							"path": [
+								"ect",
+								"download",
+								"aim",
+								"graph",
+								"{{ectDataId}}"
+							],
+							"query": [
+								{
+									"key": "dataFormat",
+									"value": "{{dataFormat}}",
+									"equals": true
+								}
+							]
+						},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "zmiany wartosci w czasie ANC",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"row\": 1,\n\t\"col\": 1\n}"
+						},
+						"url": {
+							"raw": "{{ctscan-domain}}/ect/anc/graph/{{ancDataId}}?dataFormat={{dataFormat}}",
+							"host": [
+								"{{ctscan-domain}}"
+							],
+							"path": [
+								"ect",
+								"anc",
+								"graph",
+								"{{ancDataId}}"
+							],
+							"query": [
+								{
+									"key": "dataFormat",
+									"value": "{{dataFormat}}",
+									"equals": true
+								}
+							]
+						},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "zmiany średnie w czasie AIM",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {},
+						"url": {
+							"raw": "{{ctscan-domain}}/ect/download/aim/graph/avg/{{ectDataId}}?dataFormat={{dataFormat}}",
+							"host": [
+								"{{ctscan-domain}}"
+							],
+							"path": [
+								"ect",
+								"download",
+								"aim",
+								"graph",
+								"avg",
+								"{{ectDataId}}"
+							],
+							"query": [
+								{
+									"key": "dataFormat",
+									"value": "{{dataFormat}}",
+									"equals": true
+								}
+							]
+						},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "zmiany średnie w czasie ANC",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {},
+						"url": {
+							"raw": "{{ctscan-domain}}/ect/download/anc/graph/avg/{{ancDataId}}?dataFormat={{dataFormat}}",
+							"host": [
+								"{{ctscan-domain}}"
+							],
+							"path": [
+								"ect",
+								"download",
+								"anc",
+								"graph",
+								"avg",
+								"{{ancDataId}}"
+							],
+							"query": [
+								{
+									"key": "dataFormat",
+									"value": "{{dataFormat}}",
+									"equals": true
+								}
+							]
+						},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "topogram",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "[\n\t{ \n\t\t\"row\": 1,\n\t\t\"col\": 2\n\t},\n\t{ \n\t\t\"row\": 1,\n\t\t\"col\": 3\n\t},\n\t{ \n\t\t\"row\": 1,\n\t\t\"col\": 4\n\t}\n]"
+						},
+						"url": {
+							"raw": "{{ctscan-domain}}/ect/download/aim/topogram/{{ectDataId}}?dataFormat={{dataFormat}}",
+							"host": [
+								"{{ctscan-domain}}"
+							],
+							"path": [
+								"ect",
+								"download",
+								"aim",
+								"topogram",
+								"{{ectDataId}}"
+							],
+							"query": [
+								{
+									"key": "dataFormat",
+									"value": "{{dataFormat}}",
+									"equals": true
+								}
+							]
+						},
+						"description": ""
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "process file",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {},
+				"url": {
+					"raw": "{{ctscan-domain}}/ect/process/{{ectDataId}}",
+					"host": [
+						"{{ctscan-domain}}"
+					],
+					"path": [
+						"ect",
+						"process",
+						"{{ectDataId}}"
+					]
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "lista ectData",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"page\": 0,\n\t\"limit\": 20\n}"
+				},
+				"url": {
+					"raw": "{{ctscan-domain}}/ect/data/user/{{username}}",
+					"host": [
+						"{{ctscan-domain}}"
+					],
+					"path": [
+						"ect",
+						"data",
+						"user",
+						"{{username}}"
+					]
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "jedno ectData",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {},
+				"url": {
+					"raw": "{{ctscan-domain}}/ect/data/{{ectDataId}}",
+					"host": [
+						"{{ctscan-domain}}"
+					],
+					"path": [
+						"ect",
+						"data",
+						"{{ectDataId}}"
+					]
+				},
+				"description": ""
+			},
+			"response": []
+		}
+	],
+	"auth": {
+		"type": "bearer",
+		"bearer": [
+			{
+				"key": "token",
+				"value": "{{ctscan-jwt-token}}",
+				"type": "string"
+			}
+		]
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"id": "44723666-f9f6-4894-8340-549c88a21ed4",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"id": "a93d61eb-7129-4fd8-8fd4-2119046f2a52",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	]
+}

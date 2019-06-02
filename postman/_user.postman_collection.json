@@ -1,0 +1,65 @@
+{
+	"info": {
+		"name": "_user",
+		"_postman_id": "81264443-0b2f-998d-e00c-94636036d0a9",
+		"description": "",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "signup",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"email\": \"test@test.com\",\n\t\"password\": \"test\"\n}"
+				},
+				"url": {
+					"raw": "{{ctscan-domain}}/user/signup",
+					"host": [
+						"{{ctscan-domain}}"
+					],
+					"path": [
+						"user",
+						"signup"
+					]
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "login",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"email\": \"test@test.com\",\n\t\"password\": \"test\"\n}"
+				},
+				"url": {
+					"raw": "{{ctscan-domain}}/login",
+					"host": [
+						"{{ctscan-domain}}"
+					],
+					"path": [
+						"login"
+					]
+				},
+				"description": ""
+			},
+			"response": []
+		}
+	]
+}

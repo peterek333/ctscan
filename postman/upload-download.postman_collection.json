@@ -1,0 +1,148 @@
+{
+	"info": {
+		"name": "upload/download",
+		"_postman_id": "fe2fa4fb-da16-6329-7fbb-27af576fcccd",
+		"description": "",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "upload AIM file",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "file",
+							"value": "",
+							"description": "",
+							"type": "file"
+						},
+						{
+							"key": "id",
+							"value": "{{experimentId}}",
+							"description": "",
+							"type": "text"
+						},
+						{
+							"key": "process",
+							"value": "true",
+							"description": "",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "{{ctscan-domain}}/upload/ect/AIM",
+					"host": [
+						"{{ctscan-domain}}"
+					],
+					"path": [
+						"upload",
+						"ect",
+						"AIM"
+					]
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "upload ANC file",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "file",
+							"value": "",
+							"description": "",
+							"type": "file"
+						},
+						{
+							"key": "id",
+							"value": "{{experimentId}}",
+							"description": "",
+							"type": "text"
+						},
+						{
+							"key": "process",
+							"value": "true",
+							"description": "",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "{{ctscan-domain}}/upload/ect/AIM",
+					"host": [
+						"{{ctscan-domain}}"
+					],
+					"path": [
+						"upload",
+						"ect",
+						"AIM"
+					]
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "download file",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {},
+				"url": {
+					"raw": "{{ctscan-domain}}/download/{{fileDataId}}",
+					"host": [
+						"{{ctscan-domain}}"
+					],
+					"path": [
+						"download",
+						"{{fileDataId}}"
+					]
+				},
+				"description": ""
+			},
+			"response": []
+		}
+	],
+	"auth": {
+		"type": "bearer",
+		"bearer": [
+			{
+				"key": "token",
+				"value": "{{ctscan-jwt-token}}",
+				"type": "string"
+			}
+		]
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"id": "29c71275-28cf-44fa-8263-c93248e01f36",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"id": "88973693-38db-4298-8596-827ab156a8d3",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	]
+}

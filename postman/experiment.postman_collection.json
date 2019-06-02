@@ -1,0 +1,169 @@
+{
+	"info": {
+		"name": "experiment",
+		"_postman_id": "43f4aa48-6da9-dfeb-2741-691018f51225",
+		"description": "",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "add",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"title\": \"Eksperyment 1\",\n\t\"keywords\": [\n\t\t\"rura PCV 20\", \"ECT\", \"120 sekund\"\t\n\t],\n\t\"finishedTimestamp\": 15020320304\n}"
+				},
+				"url": {
+					"raw": "{{ctscan-domain}}/experiment/add",
+					"host": [
+						"{{ctscan-domain}}"
+					],
+					"path": [
+						"experiment",
+						"add"
+					]
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "jeden eksperyment",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {},
+				"url": {
+					"raw": "{{ctscan-domain}}/experiment/{{experimentId}}",
+					"host": [
+						"{{ctscan-domain}}"
+					],
+					"path": [
+						"experiment",
+						"{{experimentId}}"
+					]
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "wszystkie eksperymenty",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {},
+				"url": {
+					"raw": "{{ctscan-domain}}/experiment",
+					"host": [
+						"{{ctscan-domain}}"
+					],
+					"path": [
+						"experiment"
+					]
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "stworzone przez uzytkownika XYZ",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {},
+				"url": {
+					"raw": ""
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "update",
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"id\": 1,\n    \"createdDate\": 1516823942555,\n    \"lastModifiedDate\": 1516823942555,\n    \"createdBy\": \"test@test.com\",\n    \"title\": \"Eksperyment 1\",\n    \"keywords\": [\n        \"ECT zmieniony keyword\",\n        \"120 sekund\",\n        \"rura PCV 20\",\n        \"dodany nowy\"\n    ],\n    \"finishedTimestamp\": 15020320304\n}"
+				},
+				"url": {
+					"raw": "{{ctscan-domain}}/experiment",
+					"host": [
+						"{{ctscan-domain}}"
+					],
+					"path": [
+						"experiment"
+					]
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "delete",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"body": {},
+				"url": {
+					"raw": "{{ctscan-domain}}/experiment/{{experimentId}}",
+					"host": [
+						"{{ctscan-domain}}"
+					],
+					"path": [
+						"experiment",
+						"{{experimentId}}"
+					]
+				},
+				"description": ""
+			},
+			"response": []
+		}
+	],
+	"auth": {
+		"type": "bearer",
+		"bearer": [
+			{
+				"key": "token",
+				"value": "{{ctscan-jwt-token}}",
+				"type": "string"
+			}
+		]
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"id": "f3ec2766-88c6-4ef5-ba2e-25f9066c3f2a",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"id": "060d3595-0baf-4d4c-98d2-80c7357df9b6",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	]
+}
